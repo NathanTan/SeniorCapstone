@@ -1,0 +1,9 @@
+* text=auto
+
+*.txt text
+*.h text
+*.c text
+*.cpp text
+*.tex text
+*.bib text
+*.md text
