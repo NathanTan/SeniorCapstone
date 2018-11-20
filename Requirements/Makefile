@@ -24,10 +24,12 @@ $(TRG): %.dvi: %.tex $(EXAMPLES)
 	$(LATEX) $<
 
 $(PSF):%.ps: %.dvi
-	$(DVIPS) -R -Poutline -t letter $< -o $@
+	#$(DVIPS) -R -Poutline -t letter $< -o $@
+	$(DVIPS) -t letter requirements.dvi
 
 $(PDF): %.pdf: %.ps
 	ps2pdf $<
+	#xdvi requirements.dvi &
 	cp $(PDF) ../GeneratedPDF/
 
 show: $(TRG)
@@ -39,7 +41,7 @@ showps: $(PSF)
 all: pdf
 
 clean:
-	rm -f *.pdf *.ps *.dvi *.out *.log *.aux *.bbl *.blg *.pyg *.toc
+	rm -f *.pdf *.ps *.dvi *.out *.log *.aux *.bbl *.blg *.pyg *.toc *.lof
 	rm -rf _minted*
 
 .PHONY: all show clean ps pdf showps
