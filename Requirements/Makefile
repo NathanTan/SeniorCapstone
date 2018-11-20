@@ -1,4 +1,4 @@
-#export PATH := /usr/local/apps/tex_live/current/bin/x86_64-linux/:$(PATH)
+export PATH := /usr/local/apps/tex_live/current/bin/x86_64-linux/:$(PATH)
 
 LATEX	= latex -shell-escape
 BIBTEX	= bibtex
