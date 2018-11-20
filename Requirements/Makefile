@@ -19,7 +19,7 @@ ps: $(PSF)
 
 $(TRG): %.dvi: %.tex $(EXAMPLES)
 	$(LATEX) $<
-	$(BIBTEX) $(<:%.tex=%)
+	#$(BIBTEX) $(<:%.tex=%)
 	$(LATEX) $<
 	$(LATEX) $<
 
@@ -28,7 +28,6 @@ $(PSF):%.ps: %.dvi
 
 $(PDF): %.pdf: %.ps
 	ps2pdf $<
-	xdvi requirements.dvi &
 	cp $(PDF) ../GeneratedPDF/
 
 show: $(TRG)
