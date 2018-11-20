@@ -28,7 +28,7 @@ $(PSF):%.ps: %.dvi
 
 $(PDF): %.pdf: %.ps
 	ps2pdf $<
-	xdvi group_problem_statement.dvi &
+	#xdvi group_problem_statement.dvi &
 	cp $(PDF) ../GeneratedPDF/
 
 show: $(TRG)
