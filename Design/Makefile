@@ -19,7 +19,7 @@ ps: $(PSF)
 
 $(TRG): %.dvi: %.tex $(EXAMPLES)
 	$(LATEX) $<
-	$(BIBTEX) $(<:%.tex=%)
+	#$(BIBTEX) $(<:%.tex=%)
 	$(LATEX) $<
 	$(LATEX) $<
 
@@ -40,7 +40,7 @@ showps: $(PSF)
 all: pdf
 
 clean:
-	rm -f *.pdf *.ps *.dvi *.out *.log *.aux *.bbl *.blg *.pyg *.toc
+	rm -f *.pdf *.ps *.dvi *.out *.log *.aux *.bbl *.blg *.pyg *.toc *.lof
 	rm -rf _minted*
 
 .PHONY: all show clean ps pdf showps

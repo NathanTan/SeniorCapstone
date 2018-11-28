@@ -58,7 +58,7 @@
         \hfill
         % 4. If you have a logo, use this includegraphics command to put it on the coversheet.
         \begin{center}
-        \includegraphics[height=4cm]{graphics/logo.png}
+        \includegraphics[height=4cm]{graphics/logo.eps}
         \end{center}
         \par\vspace{.2in}
         \centering
@@ -185,7 +185,7 @@ The software layout for our helicopter will consist of two major block with thre
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.7\textwidth]{graphics/high_level_overall_arch.png}
+    \includegraphics[width=0.7\textwidth]{graphics/high_level_overall_arch.eps}
     \caption{Overall System Software Architecture}
     \label{fig:OverallSystemArchitecture}
 \end{figure}
@@ -207,7 +207,7 @@ The diagram below, Figure \ref{fig:HelicopterSoftwareArchitecture}, outlines the
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\textwidth]{graphics/helicopter_diagram.png}
+    \includegraphics[width=0.9\textwidth]{graphics/helicopter_diagram.eps}
     \caption{Helicopter Software Architecture}
     \label{fig:HelicopterSoftwareArchitecture}
 \end{figure}
@@ -226,7 +226,7 @@ Our computer view's main responsibility is to presenting the camera feeds and fl
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{graphics/computer_diagram.png}
+    \includegraphics[width=0.8\textwidth]{graphics/computer_diagram.eps}
     \caption{Computer View Software Architecture}
     \label{fig:ComputerViewSoftwareArchitecture}
 \end{figure}
@@ -243,7 +243,7 @@ OpenCV, which stands for Open Computer Vision, is an open source library that gi
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.5\textwidth]{graphics/object_recognition_workflow.png}
+    \includegraphics[width=0.5\textwidth]{graphics/object_recognition_workflow.eps}
     \caption{Object Recognition Workflow}
     \label{fig:ObjectRecognitionWorkflow}
 \end{figure}
@@ -277,7 +277,7 @@ The system involves three \textit{LV-MaxSonar-EZ0} ultrasonic range sensors, wit
 Collision warning system is established at the server side. Range sensor data received from the MAV is processed at the server side and reflected in the web page, as noted in figure \ref{fig:ColWar}.
 \begin{figure}[h]
     \centering
-    \includegraphics[height=3.5cm]{graphics/collision_warning.png}
+    \includegraphics[height=3.5cm]{graphics/collision_warning.eps}
     \caption{Collision Warning Flow}
     \label{fig:ColWar}
 \end{figure}
@@ -286,7 +286,7 @@ Collision warning system is established at the server side. Range sensor data re
 The GUI consists of a top view of the MAV, surrounded by colored semi-pie sections, shown in figure \ref{fig:ColWarGUI}. Each pie section is dedicated to its associated range sensor and is colored in green, yellow, orange, or red, depending on how far an obstacle is. Red indicates obstacle is too close and green indicates no obstacles within a safe radius.
 \begin{figure}[h]
     \centering
-    \includegraphics[height=3.5cm]{graphics/collision_warning_gui.png}
+    \includegraphics[height=3.5cm]{graphics/collision_warning_gui.eps}
     \caption{Collision Warning GUI}
     \label{fig:ColWarGUI}
 \end{figure}
@@ -302,7 +302,7 @@ Collision avoidance is collision warning at the next level. Whenever the MAV is 
 Collision avoidance involves all the range sensors, accelerometer, and potentially the depth map from the front facing camera. For rapid response, collision avoidance is processed onboard the MAV. Figure \ref{fig:ColAvo} shows the onbaord collision system implementation.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{graphics/collision_avoidance.png}
+    \includegraphics[width=0.8\textwidth]{graphics/collision_avoidance.eps}
     \caption{Collision Avoidance}
     \label{fig:ColAvo}
 \end{figure}
