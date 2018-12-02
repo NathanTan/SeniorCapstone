@@ -1,4 +1,4 @@
-\documentclass[onecolumn, draftclsnofoot, 10pt, compsoc]{IEEEtran}
+\documentclass[onecolumn, oneside, letterpaper, draftclsnofoot, 10pt, compsoc]{IEEEtran}
 
 \usepackage[english]{babel}
 \usepackage{graphicx}
@@ -21,8 +21,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage[normalem]{ulem}
 
-\usepackage{geometry}
-\geometry{textheight=9.5in, textwidth=7in}
+\usepackage[margin=0.75in]{geometry}
 
 % 1. Fill in these details
 \def \CapstoneTeamName{         Beaver Hawks}
@@ -35,12 +34,7 @@
 \def \CapstoneSponsorCompany{   Potentially Columbia Helicopters}
 \def \CapstoneSponsorPerson{    Nancy Squires}
 
-% 2. Uncomment the appropriate line below so that the document type works
-\def \DocType{Design Document
-                %Technology Review
-                %Design Document
-                %Progress Report
-                }
+\def \DocType{Design Document}
 
 \newcommand{\NameSigPair}[1]{\par
 \makebox[2.75in][r]{#1} \hfil   \makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill        \makebox[.75in]{\hrulefill}}
@@ -116,6 +110,10 @@
     \item Pickup Guidance
     \item Attitude Indicator
     \item Speed Indicator
+    \item Front Video Feed
+    \item Bottom Video Feed
+    \item LED Control
+    \item Speaker Control
 \end{itemize}
 
 \noindent\textbf{Matthew Phillips} contributed to:
@@ -369,6 +367,40 @@ Three speed labels and their values are displayed at the bottom-center view of t
 
 \subsubsection{Design Rationale}
 Presenting speed in text form is enough for the pilot to be aware of how fast the MAV is moving. Additionally, velocity is not an important indicator and therefore must take minimal space on the main screen.
+
+\subsection{Front Video Feed}
+\subsubsection{Introduction}
+Front camera video feed is the most essential and a required component of the design.
+
+\subsubsection{GUI Element}
+A background window element with video feed overlaying the entire element area.
+
+\subsubsection{Design Rationale}
+Because video feed is a required component and allows for the pilot to see what the MAV is doing whenever the MAV is not visible to the pilot, the entire video feed should stand out. Overlaying the entire monitor provides a clear visual to the pilot.
+
+\subsection{Bottom Video Feed}
+\subsubsection{Introduction}
+Bottom facing video feed provides additional visual information to the pilot, including is used to assist the pilot in package pickup. The video feed may be overlayed with image recognition and package assist components.
+
+\subsubsection{GUI Element}
+A smaller rectangular area at the right side of the screen, displaying the bottom camera video feed. Whenever the pickup mode is entered, the rectangular area is enlarged and additional pickup assist elements are displayed in the rectangular area.
+
+\subsubsection{Design Rational}
+Because bottom video feed is not as important as the  front video feed, the rectangular area for the bottom video feed must not stand out.
+
+\subsection{LED Control}
+\subsubsection{Introduction}
+The MAV is equipped with LEDs and their flashing and color is controlled by script.
+
+\subsubsection{Structure}
+The server processes flight variables and transmits color and brightness of LEDs to the MAV.
+
+\subsection{Speaker Control}
+\subsubsection{Introduction}
+The speaker at the MAV is to provide auditory feedback to the pilot and the entire group at the competition, including the victory song, and collision avoidance mode switch.
+
+\subsubsection{Structure}
+The server processes acquired information from the MAV and determines when to play sounds and which sounds to play, which is then transmitted to the MAV to trigger the onboard speaker. The sounds and music themselves may very likely be stored onboard the MAV. The server transmits the identifier of the sound to trigger.
 
 \section{User Interface}
 The user interface consists of a webpage, with the entire background covered with a front view video feed. Flight instrument component elements and bottom facing camera feed element overlay the sides of the main video feed and may be semi-transparent. When package pickup mode is entered, the bottom facing camera feed window is enlarge sightly and pickup guidance elements are presented.
