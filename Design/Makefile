@@ -28,7 +28,6 @@ $(PSF):%.ps: %.dvi
 
 $(PDF): %.pdf: %.ps
 	ps2pdf $<
-	xdvi design.dvi &
 	cp $(PDF) ../GeneratedPDF/
 
 show: $(TRG)
