@@ -52,12 +52,7 @@
 \def \CapstoneSponsorCompany{   Potentially Columbia Helicopters}
 \def \CapstoneSponsorPerson{    Nancy Squires}
 
-% 2. Uncomment the appropriate line below so that the document type works
-\def \DocType{Requirements Document
-                %Technology Review
-                %Design Document
-                %Progress Report
-                }
+\def \DocType{Requirements Document}
 
 \newcommand{\NameSigPair}[1]{\par
 \makebox[2.75in][r]{#1} \hfil   \makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill        \makebox[.75in]{\hrulefill}}
@@ -103,7 +98,7 @@
             \vspace{20pt}
         }
         \begin{abstract}
-        Oregon State University (OSU) is participating in this year's Mirco Air Vehicle Challenge hosted by the Vertical Flight Society (AHS). The OSU team is large and interdisciplinary. This document covers the basic structure of the team's software and its expected functionality.
+        Oregon State University (OSU) is participating in this year\textquotesingle s Mirco Air Vehicle Challenge (MAV) hosted by the Vertical Flight Society (VFS). The VFS hosts the annual MAV Challenge to attract interest from future scientists and engineers, and to promote vertical flight technology. OSU\textquotesingle s team is comprised of Mechanical Engineers, Electrical and Computer Engineers, and Computer Scientists. This document covers the expected functionality of OSU\textquotesingle s MAV software, developed and written by the team\textquotesingle s Computer Scientists, upon delivery in Spring 2019.
         \end{abstract}
     \end{singlespace}
 \end{titlepage}
@@ -118,7 +113,7 @@
 \section{Introduction}
 
 \subsection{Purpose}
-This document establishes definite project requirements of the CS team’s portion of the Vertical Flight Society’s (VFS) micro air vehicle (MAV) obstacle course challenge. Each requirement is described in detail.
+This document establishes definite project requirements of the Computer Science team\textquotesingle s portion of the Vertical Flight Society\textquotesingle s Micro Air Vehicle obstacle course challenge. Each requirement is described in detail.
 
 \subsection{Scope}
 This document is constrained to the CS team’s work on the MAV. These top-level features are the focus:
@@ -140,42 +135,60 @@ The MAV will have a dedicated computer that handles data processing and flight c
 The MAV is controlled remotely by an experienced pilot. Visual display, pickup assist, and obstacle warning system will provide the pilot with additional information to navigate the MAV.
 
 \subsubsection{Limitations}
-The competition and the MAV should conform to the rules established by the Vertical Flight Society, which enforce safety considerations, inclusion of remote control functionality, a 500 gram weight limit, a 45 centimeter dimension limit in any direction, and inclusion of an onboard camera. The 500 gram weight limit and budget limitations prevent the use of desired hardware, including Intel RealSense camera, laser scanner, laser range finders, high bandwidth broadcasting equipment, and powerful onboard processing units.
+The competition and the MAV should conform to the rules established by the Vertical Flight Society, which enforce safety considerations, inclusion of remote control functionality, a 500 gram weight limit, a 45 centimeter dimension limit in any direction, and inclusion of an onboard camera. The 500 gram weight limit and budget limitations prevent the use of desired hardware, including \textit{Intel RealSense} camera, laser scanner, laser range finders, high bandwidth broadcasting equipment, and powerful on-board processing units.
 
 \subsection{Apportioning of Requirements}
-This gantt chart describes our estimated timeline of completing tasks. Each phase needs to be completed by the end of it’s width. Documents for the grade portion of this project are due by the end of each term, denoted by the green bars. In terms of the CS team, code for the various helicopter components should be feature complete by the end of winter term.
-\begin{figure}[h!]
-\centering
-\includegraphics[width=1.0\textwidth]{graphics/completion_timeline.eps}
-\caption{Completion Timeline}
+Figure \ref{fig:GanttChart} is a Ghantt chart that describes our estimated timeline of completing tasks. Each phase needs to be completed by the end of it’s width. Documents for the grade portion of this project are due by the end of each term, denoted by the green bars. In terms of the CS team, code for the various helicopter components should be feature complete by the end of winter term.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{graphics/gantt_chart.eps}
+    \caption{Completion Timeline}
+    \label{fig:GanttChart}
 \end{figure}
 
 \subsection{Definitions}
 \begin{itemize}
+    \item \textbf{Anti-Torque}: Rotational control of helicopter.
+    \item \textbf{Collective}: Pitch angle of helicopter\textquotesingle s main rotor blades.
     \item \textbf{Computer Vision}: A subset of artificial intelligence that deals with providing information through visual and image data.
     \item \textbf{Convolutional Neural Network (CNN)}: A type of Neural Network that has learnable weights and biases that help to inference the data better. A CNN learns from each raw pixel from an image and assigns new weights to the convolution layer.
     \item \textbf{Convolutional Layer}: A layer of a CNN that performs the computations.
+    \item \textbf{Cyclic}: Pitch and roll (tilt) of a helicopter\textquotesingle s main rotor.
     \item \textbf{Dropout Layer}: A layer of the CNN that prevents overfitting of data.
+    \item \textbf{GUI}: Graphical user interface.
     \item \textbf{Micro Air Vehicle (MAV)}: A remotely controlled, semi-autonomous, coaxial helicopter.
-    \item \textbf{Package}: A sealed paper lunch bag, containing a pamphlet. A braided wire loop is attached at the top of the bag for acquirement.
+    \item \textbf{OSU}: Oregon State University.
+    \item \textbf{Package}: A sealed paper lunch bag, containing a pamphlet, shown in figure \ref{fig:Bag}. A braided wire loop is attached at the top of the bag for acquirement.
     \item \textbf{Package A}: A package weighing between 20 and 25 grams.
     \item \textbf{Package B}: A package weighing between 25 and 30 grams.
-    \item \textbf{GUI}: Graphical user interface.
+    \item \textbf{Throttle}: Engine power to helicopter\textquotesingle s main rotor.
+    \item \textbf{VFS}: Vertical Flight Society.
 \end{itemize}
-\begin{figure}[h!]
-\centering
-\includegraphics[height=4cm]{graphics/bag.eps}
-\caption{Package}
+\begin{figure}[h]
+    \centering
+    \includegraphics[height=4cm]{graphics/bag.eps}
+    \caption{Package}
+    \label{fig:Bag}
 \end{figure}
 
 \subsection{References}
 [1]
 \newblock Vertical Flight Society. (2018).
 \newblock {\em 7th Annual VFS Micro Air Vehicle (MAV) Student Challenge} [PDF file].
-\newblock Retrieved from \url{ https://vtol.org/files/dmfile/7th-annual-mav-student-challenge_v7_oct182018.pdf?fbclid=IwAR3-J_yJIKUKoGPBfsdJFAbjMUzXoxwg1hCXiQi6JnWZRLOnSMBRnMmQGKU}.
+\newblock Retrieved from \url{https://vtol.org/files/dmfile/7th-annual-mav-student-challenge_v7_oct182018.pdf?fbclid=IwAR3-J_yJIKUKoGPBfsdJ}\\ \url{FAbjMUzXoxwg1hCXiQi6JnWZRLOnSMBRnMmQGKU}.
+
+[2]
+\newblock Standford CS-231. (2018).
+\newblock {\em Convolutional Neural Networks for Visual Recognition}.
+\newblock Retrieved from \url{http://cs231n.github.io/convolutional-networks/}.
+
+[3]
+\newblock Federal Aviation Administration. (2018).
+\newblock {\em Helicopter Flying Handbook}.
+\newblock Retrieved from \url{https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/helicopter_flying_handbook/media/hfh_ch03.pdf}.
 
 \section{Specific Requirements}
-This section contains all the input and functional requirements of the MAV's software.
+This section contains all the input and functional requirements of the MAV\textquotesingle s software.
 
 \subsection{External Interfaces}
 The following section composes hardware components required for the software.
@@ -209,7 +222,7 @@ Output destination: MRTRAN\\
 \textbf{Tool ID: IRCAM}\\
 Name: Infrared Camera\\
 Description: The infrared camera will see where the front facing infrared lasers hit objects in front of the MAV. The software will process the data to provide the pilot with information regarding the viability of the current flight path.\\
-Output destination: MRTRAN
+Output destination: MRTRAN\\
 
 \noindent
 \textbf{Tool ID: NCAM}\\
@@ -254,8 +267,7 @@ Output: MRTRAN, DPROC\\
 Name: Processing Unit\\
 Description: A dedicated, standalone computer for processing incoming camera and sensor data. Also responsible for processing commands for the MAV. Includes display, keyboard, joystick, and throttle.\\
 Input: CRTRAN\\
-Output: CRTRAN\\
-
+Output: CRTRAN
 
 \subsection{Functions}
 The following section composes hardware software functionalities.
@@ -301,7 +313,7 @@ Input: DPROC\\
 Output: DPROC
 
 \subsection{Competition Walkthrough}
-The MAV must complete a mission that is themed as Washington’s Flight for Liberty. The MAV's mission performance is the standard to which the OSU team's software will be held. Objectives of the mission are described below (please refer to Figure 1 for the visual):
+The MAV must complete an obstacle course mission themed as Washington\textquotesingle s Flight for Liberty. Our team\textquotesingle s grade is assessed based on the reliability and performance of completed tasks. Figure \ref{fig:CourseMap} displays a mock-up of an obstacle course. Step-by-step objectives of an obstacle course are as follows:
 \begin{enumerate}
 \item The mission begins with the MAV parked at Thomas Paine’s helipad. Upon the start of a ten minute timer, the MAV must do the following:
 \begin{enumerate}
@@ -337,10 +349,11 @@ The MAV must complete a mission that is themed as Washington’s Flight for Libe
 \item Land the MAV within 0.91 meters of the helipad.
 \end{enumerate}
 \end{enumerate}
-\begin{figure}[h!]
-\centering
-\includegraphics[width=0.5\textwidth]{graphics/course_map.eps}
-\caption{Course Map}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{graphics/course_map.eps}
+    \caption{Course Map}
+    \label{fig:CourseMap}
 \end{figure}
 
 \subsection{Verification}

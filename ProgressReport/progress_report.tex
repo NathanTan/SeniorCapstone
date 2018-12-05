@@ -144,7 +144,6 @@ Each member of our team conducted separate technology reviews that each consiste
 The purpose of the design document is to flesh out all the components that will be implemented. The document provides details for the structure of two main bodies of software, the software running on the Raspberry Pi Zero, which operates the helicopter to an extent, and the software on the laptop which will be responsible for receiving transmitted data and presenting it to the pilot in a helpful fashion.
 \noindent
 
-
 \section{Problems and Solutions}
 \subsection{Hardware Limitation}
 % Hardware limitations
@@ -197,9 +196,7 @@ Each of the components performs a significant task in developing an intelligent 
     \item Training Data: Gather image data of the payload pickup and drop-off point based on the competition information.
     \item Data Preprocessing: Before data, the data needed to be cleaned to a unified structure that allows for equal learning opportunities to learn.
     \item Training: Training the image data is a critical portion of image recognition. The training segment is where the machine learns to distinguish between different objects.
-    \begin{itemize}
-        \item Neural Network: The current design choice is to build a neural network, which is a deep learning mechanism to train our model. While computationally expensive, a neural network generally yields accurate results when inferencing an object.
-    \end{itemize}
+    \item Neural Network: The current design choice is to build a neural network, which is a deep learning mechanism to train our model. While computationally expensive, a neural network generally yields accurate results when inferencing an object.
     \item Output Weights File: The weights file is the multidimensional output from the training. It is the neural network connections that were generated in order to achieve accurate inferencing.
     \item Using Weight file for object recognition: Once the weight file is ready from the training, we load the file into the computer vision application which enables the inferencing.
     \item Decision: Finally, the local machine has the ability to detect objects in real-time (in this scenario, we now have the ability to find an optimal payload pickup point).
@@ -232,7 +229,7 @@ Collision avoidance involves all the range sensors, accelerometer, and potential
 % Matthew
 % Attidute indicator, speed indicator, height detection
 % Refer to design document for details on these instruments
-There are two variables used to stabilize the helicopter. The accelerometer detects magnitude and the direction of movement and the gyroscope tracks the orientation of the vehicle. These variables are fed into the helicopter's onboard computer which calculates the proper values for the helicopter’s pitch, roll, collective pitch, torque, and throttle. Stable hover and stable flight are achievable because of the onboard accelerometer and gyroscope.
+There are two variables used to stabilize the helicopter. The accelerometer detects magnitude and the direction of movement and the gyroscope tracks the orientation of the vehicle. These variables are fed into the helicopter\textquotesingle s onboard computer which calculates the proper values for the helicopter’s pitch, roll, collective pitch, torque, and throttle. Stable hover and stable flight are achievable because of the onboard accelerometer and gyroscope.
 
 \noindent
 The third flight variable is height. Height is not directly used in stabilizing the craft, but is used for assisting with package pickup. The height value comes from a downward facing sonic sensor. Height is used, along with image recognition software, to help the pilot pick up the target package, or if selected, automatically adjust the helicopter’s position over the target.
@@ -245,7 +242,7 @@ The third flight variable is height. Height is not directly used in stabilizing 
 \subsection{Week 3}
 %script read
 \noindent \textbf{Progress}\\ \noindent
-Overall, week 3 was a very busy week. Our group was assigned to a Micro Air Vehicle Challenge hosted by the vertical flight society. We met up with our other team members. There are three subteams to the whole team. The three subteams are made of CS students, ME students, and ECE students. The MEs and ECEs were already assigned to the project before us. Our first day we were introduced to last year's project and showed the helicopter from last year’s team. Initially our group used email and text messaging exclusively, however, we decided to setup a Slack channel to help our group stay organized. We also tried to start coordinating our efforts with the ECEs at the beginning because our designs interact closely.
+Overall, week 3 was a very busy week. Our group was assigned to a Micro Air Vehicle Challenge hosted by the vertical flight society. We met up with our other team members. There are three subteams to the whole team. The three subteams are made of CS students, ME students, and ECE students. The MEs and ECEs were already assigned to the project before us. Our first day we were introduced to last year\textquotesingle s project and showed the helicopter from last year’s team. Initially our group used email and text messaging exclusively, however, we decided to setup a Slack channel to help our group stay organized. We also tried to start coordinating our efforts with the ECEs at the beginning because our designs interact closely.
 
 \noindent \textbf{Problems}\\ \noindent
 We also still needed to contact our client and determine our meeting times with the TA.
