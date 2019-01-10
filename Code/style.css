@@ -1,0 +1,14 @@
+.FlightVariables {
+  text-align: center;
+  width: 150px;
+  height: 150px;
+  border: 1px solid black;
+}
+
+.BottomFeed {
+  text-align: center;
+  float: right;
+  width: 250px;
+  height: 500px;
+  border: 1px solid black;
+}
