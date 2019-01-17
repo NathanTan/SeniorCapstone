@@ -2,11 +2,11 @@
 <html>
 <script src="script.js"></script>
 <head>
+  <script src="src/video.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
   <h1 align="center"> MAV Intelligence Platform </h1>
 
 
@@ -33,7 +33,14 @@
       <div class='AttitudeFeed'> Attitude Feed </div>
     </div>
     <div class='CenterContainer'>
-      <div class='FrontFeed'> Front Feed </div>
+      <div class='FrontFeed'> 
+        <video autoplay playsinline></video>
+
+        <!-- <video id="videoPlayer" controls>
+        <source src="http://localhost:3000/video-feed-1" type="video/mp4">
+      </video> -->
+    
+    </div>
     </div>
     <div class='CenterContainer'>
       <div class='BottomFeed'> Bottom Feed </div>
