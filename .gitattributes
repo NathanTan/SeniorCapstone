@@ -1,0 +1,12 @@
+* text=auto
+
+*.txt text eol=lf filter=spabs
+*.h text eol=lf filter=spabs
+*.c text eol=lf filter=spabs
+*.cpp text eol=lf filter=spabs
+*.tex text eol=lf filter=spabs
+*.bib text eol=lf filter=spabs
+*.md text eol=lf filter=spabs
+
+*.eps binary
+*.png binary
