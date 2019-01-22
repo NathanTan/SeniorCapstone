@@ -1,3 +1,11 @@
+fetch('/flightVars')
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (myJson) {
+        console.log(JSON.stringify(myJson));
+    });
+
 //For switching between the depth map and bottom camera feed
 var switchBottomView = document.getElementsByClassName("BottomFeed");
 var switchDepthMap = document.getElementsByClassName("DepthMap");
