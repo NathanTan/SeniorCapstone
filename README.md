@@ -7,7 +7,15 @@ Matthew Phillips<br/>
 Shanmukh Challa<br/>
 Nathan Tan<br/>
 
-# Image Rules
+
+# Starting Server
+```bash
+cd Code/
+npm i
+npm start
+```
+
+# LaTex Graphic Rules
 When uploading graphics to overleaf, upload them in PNG format (preferably transparent background). When uploading the TEX document to repository, convert all graphics to EPS format with an online converter, and then within the TEX file replace <tt>.png</tt> with <tt>.eps</tt>.
 
 # Generating PDF Documents

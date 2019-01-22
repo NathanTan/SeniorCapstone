@@ -40,6 +40,14 @@
   border: 1px solid black;
 }
 
+.DepthMap {
+  display: flex;
+  text-align: center;
+  width: 200px;
+  height: 350px;
+  border: 1px solid black;
+}
+
 .AttitudeFeed {
   display: flex;
   text-align: center;
