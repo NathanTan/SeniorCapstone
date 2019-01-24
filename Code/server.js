@@ -2,11 +2,13 @@ const express = require("express")
 const fetch = require('node-fetch')
 let path = require('path')
 
-let flightVars = {}
-
-const sdgen = require('./src/randomizer') // sensor data generator
+const sdgen = require('./src/sensor_data_generator') // sensor data generator
 
 const app = express()
+
+let flightVars = {}
+let startDate = new Date();
+let startTime = startDate.getTime();
 
 app.use(express.static(__dirname + '/public'))
 app.use(express.static(__dirname + '/src'))
@@ -27,6 +29,7 @@ app.listen(port, () => {
 
 setInterval(function() {
     let date = new Date();
-    let t = date.getTime();
-    flightVars.height = sdgen.getHeight(t);
-}, 100);
+    let t = (date.getTime() - startTime) * 0.01;
+    flightVars.height = Math.round(sdgen.getHeight(t));
+    flightVars.color = sdgen.getFrontSonarColor(t);
+}, 10);

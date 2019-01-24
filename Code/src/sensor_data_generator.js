@@ -109,11 +109,12 @@ const FRONT_SONAR_VALUES = {
 // This takes the values and applies linear interpolation
 function interpolateValues(values, time, repeat = false) {
     // find min and max time
-    let tmin = undefined;
-    let tmax = undefined;
-    for (let x in values) {
-        if (tmin === undefined || x < tmin) tmin = x;
-        if (tmax === undefined || x > tmax) tmax = x;
+    let tmin = null;
+    let tmax = null;
+    for (let sx in values) {
+        let x = parseFloat(sx);
+        if (tmin === null || x < tmin) { tmin = x; }
+        if (tmax === null || x > tmax) { tmax = x; }
     }
     // clamp or modulo
     if (repeat) {
@@ -130,17 +131,18 @@ function interpolateValues(values, time, repeat = false) {
     // find prior and next times
     let tprior = tmin;
     let tnext = tmax;
-    for (let x in values) {
+    for (let sx in values) {
+        let x = parseFloat(sx);
         if (x > tprior && x <= time) tprior = x;
         if (x < tnext && x >= time) tnext = x;
     }
     // interpolate between both
     let dt = tnext - tprior;
     if (dt < 1.0e-12) {
-        return (values[tprior] + valies[tnext]) * 0.5;
+        return (values[tprior.toString()] + values[tnext.toString()]) * 0.5;
     }
     let r = (time - tprior) / dt;
-    return values[tmin] + (values[tmax] - values[tmin]) * r;
+    return values[tprior.toString()] + (values[tnext.toString()] - values[tprior.toString()]) * r;
 }
 
 // Assumes:
@@ -170,14 +172,18 @@ function interpolateColors(colors, ratio) {
 }
 
 function convertColorToCSS(c) {
-    let n = c[0] + (c[1] << 8) + (c[2] << 16);
-    return '#' + n.toString(16);
+    let n = c[2] + (c[1] << 8) + (c[0] << 16);
+    let hex = n.toString(16);
+    while (hex.length < 6) {
+        hex = "0" + hex;
+    }
+    return '#' + hex;
 }
 
 // Returns a string, representing a hex color
 // ex: "#ff0c00"
 function convertSonarRangeToCSSColor(range) {
-    let r = (x - SONAR_MIN) / (SONAR_MAX - SONAR_MIN);
+    let r = (range - SONAR_MIN) / (SONAR_MAX - SONAR_MIN);
     let c = interpolateColors(SONAR_COLORS, r);
     return convertColorToCSS(c);
 }
@@ -195,7 +201,7 @@ module.exports = {
 
     // Returns a float, representing heiht in inches.
     getAttitide: function(time) {
-        return interpolateValues(HEIGHT_VALUES, time, true);
+        return interpolateValues(ATTITUDE_VALUES, time, true);
     },
 
     // Returns a float, representing forward tilt angle in degrees.

@@ -1,5 +1,6 @@
 function updateHTMLContent(data) {
   document.getElementById("height").innerHTML = data.height.toString();
+  document.getElementById("height").style.color = data.color;
 }
 
 setInterval(function() {
@@ -9,9 +10,9 @@ fetch('/flightVars')
     })
     .then(function (myJson) {
       console.log(JSON.stringify(myJson));
-      updateHTMLContent(myJson)
+      updateHTMLContent(myJson);
     });
-}, 100);
+}, 10);
 
 //For switching between the depth map and bottom camera feed
 var switchBottomView = document.getElementsByClassName("BottomFeed");
