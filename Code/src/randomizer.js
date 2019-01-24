@@ -187,35 +187,37 @@ function convertSonarRangeToCSSColor(range) {
 //  Export Functions
 // -----------------------------------------------------------------------------
 
-// Returns a float, representing heiht in inches.
-function getHeight(time) {
-    return interpolateValues(HEIGHT_VALUES, time, true);
-}
+module.exports = {
+    // Returns a float, representing heiht in inches.
+    getHeight: function(time) {
+        return interpolateValues(HEIGHT_VALUES, time, true);
+    },
 
-// Returns a float, representing attitude in degrees.
-function getAttitide(time) {
-    return interpolateValues(ATTITUDE_VALUES, time, true);
-}
+    // Returns a float, representing heiht in inches.
+    getAttitide: function(time) {
+        return interpolateValues(HEIGHT_VALUES, time, true);
+    },
 
-// Returns a float, representing forward tilt angle in degrees.
-function getForwardTilt(time) {
-    return interpolateValues(FORWARD_TILT_VALUES, time, true);
-}
+    // Returns a float, representing forward tilt angle in degrees.
+    getForwardTilt: function(time) {
+        return interpolateValues(FORWARD_TILT_VALUES, time, true);
+    },
 
-// Returns a string, representing an interpolated color in CSS form
-function getLeftSonarColor(time) {
-    let x = interpolateValues(LEFT_SONAR_VALUES, time, true);
-    return convertSonarRangeToCSSColor(x);
-}
+    // Returns a string, representing an interpolated color in CSS form
+    getLeftSonarColor: function(time) {
+        let x = interpolateValues(LEFT_SONAR_VALUES, time, true);
+        return convertSonarRangeToCSSColor(x);
+    },
 
-// Returns a string, representing an interpolated color in CSS form
-function getRightSonarColor(time) {
-    let x = interpolateValues(RIGHT_SONAR_VALUES, time, true);
-    return convertSonarRangeToCSSColor(x);
-}
+    // Returns a string, representing an interpolated color in CSS form
+    getRightSonarColor: function(time) {
+        let x = interpolateValues(RIGHT_SONAR_VALUES, time, true);
+        return convertSonarRangeToCSSColor(x);
+    },
 
-// Returns a string, representing an interpolated color in CSS form
-function getFrontSonarColor(time) {
-    let x = interpolateValues(FRONT_SONAR_VALUES, time, true);
-    return convertSonarRangeToCSSColor(x);
-}
+    // Returns a string, representing an interpolated color in CSS form
+    getFrontSonarColor: function(time) {
+        let x = interpolateValues(FRONT_SONAR_VALUES, time, true);
+        return convertSonarRangeToCSSColor(x);
+    }
+};
