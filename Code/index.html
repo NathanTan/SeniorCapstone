@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html>
+<script src="jquery.min.js"></script>
 <script src="script.js"></script>
+
 <head>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="collision_warning.css">
 </head>
 
-<body>
+<body onload="doOnReady()">
 
   <h1 align="center"> MAV Intelligence Platform </h1>
 
@@ -29,7 +32,9 @@
 
   <div class='DataContainer'>
     <div class='LeftContainer'>
-      <div class='FlightVariables'> Flight Variables </div>
+      <div class='FlightVariables'> Flight Variables
+        <p id="height">color</p>
+      </div>
       <div class='AttitudeFeed'> Attitude Feed </div>
     </div>
     <div class='CenterContainer'>
@@ -38,12 +43,18 @@
     <div class='CenterContainer'>
       <div class='BottomFeed'> Bottom Feed </div>
       <div class='DepthMap'> Depth Map </div>
-      <div class='SensorFeed'>
-        <img style="fill: orange;" src="svg/col_war01.svg" width="100%" height="100%">
+      <div class="SensorFeed">
+        <div id="colWarContainer">
+          <object id="colWarMAV" type="image/svg+xml" data="svg/col_war01.svg"></object>
+          <object id="colWarFrontSonar" type="image/svg+xml" data="svg/col_war02.svg"></object>
+          <object id="colWarLeftSonar" type="image/svg+xml" data="svg/col_war02.svg"></object>
+          <object id="colWarRightSonar" type="image/svg+xml" data="svg/col_war02.svg"></object>
+        </div>
       </div>
 
     </div>
   </div>
 
 </body>
+
 </html>

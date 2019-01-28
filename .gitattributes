@@ -1,3 +1,4 @@
+# Auto detect text files and perform LF normalization
 * text=auto
 
 *.txt text eol=lf filter=spabs
@@ -8,5 +9,15 @@
 *.bib text eol=lf filter=spabs
 *.md text eol=lf filter=spabs
 
+*.js text eol=lf filter=spabs
+*.html text eol=lf filter=spabs
+*.css text eol=lf filter=spabs
+*.svg text eol=lf filter=spabs
+
 *.eps binary
 *.png binary
+*.pdf binary
+
+
+# Remove third party from linguist
+/Code/thirdparty* linguist-vendored

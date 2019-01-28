@@ -1,0 +1,38 @@
+#colWarContainer {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#colWarMAV {
+    position: absolute;
+    width: 40%;
+    top: 30%;
+    left: 30%;
+}
+
+#colWarLeftSonar {
+    position: absolute;
+    width: 25%;
+    top: 25%;
+    left: 0;
+}
+
+#colWarRightSonar {
+    position: absolute;
+    width: 25%;
+    top: 25%;
+    right: 0;
+    transform: rotate(180deg);
+}
+
+#colWarFrontSonar {
+    position: absolute;
+    width: 25%;
+    bottom: 63.0%;
+    left: 37.25%;
+    transform: rotate(90deg);
+}
