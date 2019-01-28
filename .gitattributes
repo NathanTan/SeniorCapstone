@@ -8,5 +8,10 @@
 *.bib text eol=lf filter=spabs
 *.md text eol=lf filter=spabs
 
+*.js text eol=lf filter=spabs
+*.html text eol=lf filter=spabs
+*.css text eol=lf filter=spabs
+
 *.eps binary
 *.png binary
+*.svg binary

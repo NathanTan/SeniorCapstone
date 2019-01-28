@@ -1,6 +1,14 @@
+let bReady = false;
+let colWarLeftSonar = undefined;
+let colWarRightSonar = undefined;
+let colWarFrontSonar = undefined;
+
 function updateHTMLContent(data) {
+  if (!bReady) return;
   document.getElementById("height").innerHTML = data.height.toString();
-  document.getElementById("height").style.color = data.color;
+  colWarFrontSonar.style.fill = data.frontSonarColor;
+  colWarLeftSonar.style.fill = data.leftSonarColor;
+  colWarRightSonar.style.fill = data.rightSonarColor;
 }
 
 setInterval(function() {
@@ -9,7 +17,7 @@ fetch('/flightVars')
       return response.json();
     })
     .then(function (myJson) {
-      console.log(JSON.stringify(myJson));
+      //console.log(JSON.stringify(myJson));
       updateHTMLContent(myJson);
     });
 }, 10);
@@ -36,3 +44,10 @@ document.addEventListener("keyup", function(event) {
     switchDepthMap[0].style.display = "none";
   }
 });
+
+function doOnReady() {
+  colWarLeftSonar = document.querySelector("#colWarLeftSonar").getSVGDocument().getElementById("path78");
+  colWarRightSonar = document.querySelector("#colWarRightSonar").getSVGDocument().getElementById("path78");
+  colWarFrontSonar = document.querySelector("#colWarFrontSonar").getSVGDocument().getElementById("path78");
+  bReady = true;
+}

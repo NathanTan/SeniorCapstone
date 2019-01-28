@@ -77,28 +77,23 @@ const LEFT_SONAR_VALUES = {
 // { time (sec) => range (in) }
 const RIGHT_SONAR_VALUES = {
     0.0 : SONAR_MIN,
-    2.0 : 50,
-    4.0 : 16,
-    5.0 : 50,
-    10.0 : 200,
-    20.0 : 230,
-    22.0 : SONAR_MAX,
+    2.0 : 10,
+    4.0 : 50,
+    5.0 : 20,
+    10.0 : 100,
+    20.0 : 10,
+    25.0 : SONAR_MAX,
     30.0 : 30,
-    33.0 : SONAR_MIN
+    35.0 : SONAR_MIN
 };
 
 // Front sonar values
 // { time (sec) => range (in) }
 const FRONT_SONAR_VALUES = {
-    0.0 : SONAR_MIN,
-    2.0 : 50,
-    4.0 : 16,
-    5.0 : 50,
-    10.0 : 200,
-    20.0 : 230,
-    22.0 : SONAR_MAX,
-    30.0 : 30,
-    33.0 : SONAR_MIN
+    0.0 : SONAR_MAX,
+    10.0 : SONAR_MIN,
+    20.0 : 50,
+    33.0 : SONAR_MAX
 };
 
 

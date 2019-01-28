@@ -12,6 +12,7 @@ let startTime = startDate.getTime();
 
 app.use(express.static(__dirname + '/public'))
 app.use(express.static(__dirname + '/src'))
+app.use(express.static(__dirname + '/thirdparty'))
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'))
@@ -31,5 +32,9 @@ setInterval(function() {
     let date = new Date();
     let t = (date.getTime() - startTime) * 0.01;
     flightVars.height = Math.round(sdgen.getHeight(t));
-    flightVars.color = sdgen.getFrontSonarColor(t);
+
+    flightVars.frontSonarColor = sdgen.getFrontSonarColor(t);
+    flightVars.leftSonarColor = sdgen.getLeftSonarColor(t);
+    flightVars.rightSonarColor = sdgen.getRightSonarColor(t);
+    
 }, 10);
