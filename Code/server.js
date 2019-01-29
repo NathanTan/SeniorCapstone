@@ -3,6 +3,7 @@ const fetch = require('node-fetch')
 let path = require('path')
 
 const sdgen = require('./src/sensor_data_generator') // sensor data generator
+const updc = require('./src/udp_connect')
 
 //Jan 23: not sure how the data will look when piped off MAV. Best guess for now, feel free to change.
 //Jan 23: X is forward/back, Y is SidetoSide, Z is verticle. Is there a standard in flight?
@@ -45,7 +46,27 @@ setInterval(function() {
 
 }, 10);
 
+// Listenders
 
+function onReceiveSensorData(data) {
+    
+}
+
+function onReceiveVideo1(data) {
+
+}
+
+function onReceiveVideo2(data) {
+
+}
+
+updc.establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2);
+
+// Both the server and the Raspberri PI need to be connected to a common local network.
+
+// To establish a connection, we put together the following protocol.
+
+/*
 var PORT =  57900;
 var HOST = '192.168.0.118';
 
@@ -63,3 +84,4 @@ server.on('message', function (message, remote) {
 });
 
 server.bind(PORT, HOST);
+*/
