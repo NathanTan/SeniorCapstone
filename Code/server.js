@@ -46,8 +46,8 @@ setInterval(function() {
 }, 10);
 
 
-var PORT = 33333;
-var HOST = '127.0.0.1';
+var PORT =  57900;
+var HOST = '192.168.0.118';
 
 var dgram = require('dgram');
 var server = dgram.createSocket('udp4');
