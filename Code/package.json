@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "dgram": "^1.0.1",
     "express": "^4.16.4",
     "node-fetch": "^2.3.0"
   },
