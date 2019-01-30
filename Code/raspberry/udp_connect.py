@@ -22,17 +22,17 @@ if os.path.exists(SERVER_IP_FNAME):
     os.remove(SERVER_IP_FNAME)
 
 # Listen for broadcast for at most BROADCAST_RECEIVE_DURATION seconds
-sc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sc.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, 1000)
-sc.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-sc.bind(("", BROADCAST_RECEIVE_PORT))
+sc1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+sc1.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, 1000)
+sc1.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+sc1.bind(("", BROADCAST_RECEIVE_PORT))
 
 server_ip = None
 start_time = time.time()
 while True:
     try:
-        data, address = sc.recvfrom(1024)
+        data, address = sc1.recvfrom(1024)
         msg = data.decode("utf-8")
         if msg == BROADCAST_RECEIVE_MESSAGE:
             server_ip = address[0]
@@ -46,6 +46,9 @@ while True:
     if elapsed >= MAX_BROADCAST_RECEIVE_DURATION:
         break
 
+# Close the socket
+sc1.close()
+
 # Validate
 if server_ip is None:
     raise OSError("Did not receive any requests from server within " +
@@ -53,15 +56,19 @@ if server_ip is None:
 
 # Send a response to the server
 print("Sending response to " + str(server_ip) + ":" + str(SERVER_RESPONSE_PORT))
-sc.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 0)
+sc2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sc2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+sc2.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 0)
 start_time = time.time()
 while True:
-    sc.sendto(SERVER_RESPONSE_MESSAGE.encode("utf-8"),
-              (server_ip, SERVER_RESPONSE_PORT))
+    sc2.sendto(SERVER_RESPONSE_MESSAGE.encode("utf-8"), (server_ip, SERVER_RESPONSE_PORT))
     time.sleep(SERVER_RESPONSE_TIMEOUT)
     elapsed = time.time() - start_time
     if elapsed >= SERVER_RESPONCE_DURATION:
         break
+
+# Close the socket
+sc2.close()
 
 # Assuming the server received our response, which makes it listen to data at
 # our, particular IP address, we are now able to send data to the server's IP
@@ -70,9 +77,6 @@ while True:
 # Interprocess communication (another writes to pipe this one reads from pipe)
 # https://docs.python.org/3/library/socket.html#example
 
-
-# Close the socket
-sc.close()
 
 # What we'll just do is create a file to store server IP address.
 # Other processes can open this file, read the IP, and use the IP in their

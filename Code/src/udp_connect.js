@@ -30,6 +30,29 @@ https://www.hacksparrow.com/node-js-udp-server-and-client-example.html
 
 var dgram = require('dgram');
 
+var os = require('os');
+var ifaces = os.networkInterfaces();
+
+Object.keys(ifaces).forEach(function (ifname) {
+  var alias = 0;
+
+  ifaces[ifname].forEach(function (iface) {
+    if ('IPv4' !== iface.family || iface.internal !== false) {
+      // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+      return;
+    }
+
+    if (alias >= 1) {
+      // this single interface has multiple ipv4 addresses
+      console.log(ifname + ':' + alias, iface.address);
+    } else {
+      // this interface has only one ipv4 adress
+      console.log(ifname, iface.address);
+    }
+    ++alias;
+  });
+});
+
 const BROADCAST_SEND_PORT = 57901;
 const BROADCAST_RECEIVE_PORT = 57902;
 const BROADCAST_IP = '255.255.255.255';
@@ -42,13 +65,17 @@ const RECEIVE_VIDEO1_PORT = 57904;
 const RECEIVE_VIDEO2_PORT = 57905;
 
 function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2) {
-    let server = dgram.createSocket('udp4');
+    let sc1 = dgram.createSocket({ type: 'udp4', reuseAddr: true })
 
     // Broadcast our message to all the IP addresses at the local network until we obtain a response
+    sc1.bind(function () {
+       sc1.setBroadcast(true); 
+    });
+
     let interval_id = setInterval(function() {
         if (interval_id === undefined) return;
 
-        server.send(BROADCAST_SEND_MESSAGE, 0, BROADCAST_SEND_MESSAGE.length, BROADCAST_SEND_PORT, BROADCAST_IP, function(err, bytes) {
+        sc1.send(BROADCAST_SEND_MESSAGE, 0, BROADCAST_SEND_MESSAGE.length, BROADCAST_SEND_PORT, BROADCAST_IP, function(err, bytes) {
             if (err) throw err;
             console.log('Server broadcasting to ' + BROADCAST_IP + ':' + BROADCAST_SEND_PORT);
         });
@@ -56,21 +83,21 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
     }, BROADCAST_INTERVAL);
 
     // Setup a listener
-    server.on('listening', function () {
-        server.setBroadcast(true);
-        let address = server.address();
+    let sc2 = dgram.createSocket({ type: 'udp4', reuseAddr: true })
+    sc2.on('listening', function () {
+        let address = sc2.address();
         console.log('Server listening on ' + address.address + ':' + address.port);
     });
 
     // Listen for the response
-    server.on('message', function (message, remote) {
+    sc2.on('message', function (message, remote) {
         if (Buffer.compare(message, BROADCAST_RECEIVE_MESSAGE) == 0 && interval_id !== undefined) {
             console.log('Response received from ' + remote.address + ':' + remote.port + ' - ' + message);
             // stop the ping
             clearInterval(interval_id);
             interval_id = undefined;
             // close the socket
-            server.close();
+            sc2.close();
             // setup sockets for each type of data
             initiateSensorDataReceiver(onReceiveSensorData, remote.address);
             initiateVideo1Receiver(onReceiveVideo1, remote.address);
@@ -79,41 +106,47 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
     });
 
     // Listen for broadcast messages at BROADCAST_RECEIVE_PORT
-    server.bind(BROADCAST_RECEIVE_PORT);
+    server.bind(BROADCAST_RECEIVE_PORT, function() {
+        sc2.setBroadcast(true);
+    });
 }
 
 function initiateSensorDataReceiver(callback, ip) {
-    let server = dgram.createSocket('udp4');
+    let server = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
     server.on('message', function (message, remote) {
+        if (remote.address != ip) return; // Accept connection with the established IP only
+        console.log(remote.address + ":" + remote.port);
         callback(JSON.parse(message.toString('utf8')));
     });
 
-    server.bind(RECEIVE_SENSOR_DATA_PORT, ip);
+    server.bind(RECEIVE_SENSOR_DATA_PORT);
 
     return server;
 }
 
 function initiateVideo1Receiver(callback, ip) {
-    let server = dgram.createSocket('udp4');
+    let server = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
     server.on('message', function (message, remote) {
+        if (remote.address != ip) return; // Accept connection with the established IP only
         callback(message.toString('utf8'));
     });
 
-    server.bind(RECEIVE_VIDEO1_PORT, ip);
+    server.bind(RECEIVE_VIDEO1_PORT);
 
     return server;
 }
 
 function initiateVideo2Receiver(callback, ip) {
-    let server = dgram.createSocket('udp4');
+    let server = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
     server.on('message', function (message, remote) {
+        if (remote.address != ip) return; // Accept connection with the established IP only
         callback(message.toString('utf8'));
     });
 
-    server.bind(RECEIVE_VIDEO2_PORT, ip);
+    server.bind(RECEIVE_VIDEO2_PORT);
 
     return server;
 }
