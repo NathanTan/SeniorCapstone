@@ -33,10 +33,10 @@ https://www.hacksparrow.com/node-js-udp-server-and-client-example.html
 
 const BROADCAST_SEND_PORT = 57901;
 const BROADCAST_RECEIVE_PORT = 57902;
-const BROADCAST_IP = '192.168.0.255';
+const BROADCAST_IP = '255.255.255.255';
 const BROADCAST_SEND_MESSAGE = new Buffer("Beaver-Hawks1");
 const BROADCAST_RECEIVE_MESSAGE = new Buffer("Beaver-Hawks2");
-const BROADCAST_INTERVAL = 100; // in ms
+const BROADCAST_INTERVAL = 500; // in ms
 
 const RECEIVE_SENSOR_DATA_PORT = 57903;
 const RECEIVE_VIDEO1_PORT = 57904;
@@ -45,13 +45,13 @@ const RECEIVE_VIDEO2_PORT = 57905;
 function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2) {
     let server = dgram.createSocket('udp4');
 
-    // Broadcast our message to all the IP addresses at the local network until we obtain a response.
+    // Broadcast our message to all the IP addresses at the local network until we obtain a response
     let interval_id = setInterval(function() {
         if (interval_id === undefined) return;
 
         server.send(BROADCAST_SEND_MESSAGE, 0, BROADCAST_SEND_MESSAGE.length, BROADCAST_SEND_PORT, BROADCAST_IP, function(err, bytes) {
             if (err) throw err;
-            console.log('Server broadcasting to ' + BROADCAST_IP + ':' + BROADCAST_PORT);
+            console.log('Server broadcasting to ' + BROADCAST_IP + ':' + BROADCAST_SEND_PORT);
         });
 
     }, BROADCAST_INTERVAL);
@@ -63,9 +63,10 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
         console.log('Server listening on ' + address.address + ":" + address.port);
     });
 
+    // Listen for the response
     server.on('message', function (message, remote) {
-        if (message == BROADCAST_RECEIVE_MESSAGE && interval_id !== undefined) {
-            console.log('Server received at ' + remote.address + ':' + remote.port + ' - ' + message);
+        if (Buffer.compare(message, BROADCAST_RECEIVE_MESSAGE) == 0 && interval_id !== undefined) {
+            console.log('Response received from ' + remote.address + ':' + remote.port + ' - ' + message);
             // stop the ping
             clearInterval(interval_id);
             interval_id = undefined;
@@ -84,7 +85,7 @@ function initiateSensorDataListener(callback, ip, port) {
     let server = dgram.createSocket('udp4');
 
     server.on('message', function (message, remote) {
-        console.log("Received sensor data at " + remote.address + ":" + remote.port.toString());
+        console.log("Received sensor data ffrom " + remote.address + ":" + remote.port.toString());
         callback(JSON.parse(message));
     });
 
