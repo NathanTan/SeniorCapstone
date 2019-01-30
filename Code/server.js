@@ -5,6 +5,22 @@ let path = require('path')
 const sdgen = require('./src/sensor_data_generator') // sensor data generator
 const updc = require('./src/udp_connect')
 
+
+// -----------------------------------------------------------------------------
+// >>> Helpers
+// -----------------------------------------------------------------------------
+
+function merge_dictionaries(din, dout) {
+    for (i in din) {
+        dout[i] = din[i];
+    }
+}
+
+
+// -----------------------------------------------------------------------------
+// >>> Main
+// -----------------------------------------------------------------------------
+
 //Jan 23: not sure how the data will look when piped off MAV. Best guess for now, feel free to change.
 //Jan 23: X is forward/back, Y is SidetoSide, Z is verticle. Is there a standard in flight?
 //Jan 23: for sonic sensors, naming orientation is as if you were a pilot in a helicopter
@@ -46,42 +62,18 @@ setInterval(function() {
 
 }, 10);
 
-// Listenders
 
+// Data Receivers
 function onReceiveSensorData(data) {
-    
+    merge_dictionaries(data, flightVars);
 }
 
 function onReceiveVideo1(data) {
-
+    //console.log("Video1: " + data);
 }
 
 function onReceiveVideo2(data) {
-
+    //console.log("Video2: " + data);
 }
 
 updc.establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2);
-
-// Both the server and the Raspberri PI need to be connected to a common local network.
-
-// To establish a connection, we put together the following protocol.
-
-/*
-var PORT =  57900;
-var HOST = '192.168.0.118';
-
-var dgram = require('dgram');
-var server = dgram.createSocket('udp4');
-
-server.on('listening', function () {
-    var address = server.address();
-    console.log('UDP Server listening on ' + address.address + ":" + address.port);
-});
-
-server.on('message', function (message, remote) {
-    console.log(remote.address + ':' + remote.port +' - ' + message);
-
-});
-
-server.bind(PORT, HOST);
-*/

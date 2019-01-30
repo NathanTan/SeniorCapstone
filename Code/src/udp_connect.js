@@ -1,7 +1,4 @@
-var dgram = require('dgram');
-
 /*
-
 UDP Connect
 
 For the following to work, both the server the Raspberry Pi need to be
@@ -31,11 +28,13 @@ https://www.hacksparrow.com/node-js-udp-server-and-client-example.html
 
 */
 
+var dgram = require('dgram');
+
 const BROADCAST_SEND_PORT = 57901;
 const BROADCAST_RECEIVE_PORT = 57902;
 const BROADCAST_IP = '255.255.255.255';
-const BROADCAST_SEND_MESSAGE = new Buffer("Beaver-Hawks1");
-const BROADCAST_RECEIVE_MESSAGE = new Buffer("Beaver-Hawks2");
+const BROADCAST_SEND_MESSAGE = new Buffer('Beaver-Hawks1');
+const BROADCAST_RECEIVE_MESSAGE = new Buffer('Beaver-Hawks2');
 const BROADCAST_INTERVAL = 500; // in ms
 
 const RECEIVE_SENSOR_DATA_PORT = 57903;
@@ -60,7 +59,7 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
     server.on('listening', function () {
         server.setBroadcast(true);
         let address = server.address();
-        console.log('Server listening on ' + address.address + ":" + address.port);
+        console.log('Server listening on ' + address.address + ':' + address.port);
     });
 
     // Listen for the response
@@ -73,7 +72,9 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
             // close the socket
             server.close();
             // setup sockets for each type of data
-            initiateSensorDataListener(onReceiveSensorData, remote.address, RECEIVE_SENSOR_DATA_PORT);
+            initiateSensorDataReceiver(onReceiveSensorData, remote.address);
+            initiateVideo1Receiver(onReceiveVideo1, remote.address);
+            initiateVideo2Receiver(onReceiveVideo2, remote.address);
         }
     });
 
@@ -81,15 +82,38 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
     server.bind(BROADCAST_RECEIVE_PORT);
 }
 
-function initiateSensorDataListener(callback, ip, port) {
+function initiateSensorDataReceiver(callback, ip) {
     let server = dgram.createSocket('udp4');
 
     server.on('message', function (message, remote) {
-        console.log("Received sensor data ffrom " + remote.address + ":" + remote.port.toString());
-        callback(JSON.parse(message));
+        callback(JSON.parse(message.toString('utf8')));
     });
 
-    server.bind(port, ip);
+    server.bind(RECEIVE_SENSOR_DATA_PORT, ip);
+
+    return server;
+}
+
+function initiateVideo1Receiver(callback, ip) {
+    let server = dgram.createSocket('udp4');
+
+    server.on('message', function (message, remote) {
+        callback(message.toString('utf8'));
+    });
+
+    server.bind(RECEIVE_VIDEO1_PORT, ip);
+
+    return server;
+}
+
+function initiateVideo2Receiver(callback, ip) {
+    let server = dgram.createSocket('udp4');
+
+    server.on('message', function (message, remote) {
+        callback(message.toString('utf8'));
+    });
+
+    server.bind(RECEIVE_VIDEO2_PORT, ip);
 
     return server;
 }
