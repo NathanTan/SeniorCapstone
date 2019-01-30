@@ -24,9 +24,9 @@ if os.path.exists(SERVER_IP_FNAME):
 # Listen for broadcast for at most BROADCAST_RECEIVE_DURATION seconds
 sc1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sc1.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, 1000)
 sc1.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 sc1.bind(("", BROADCAST_RECEIVE_PORT))
+sc1.settimeout(1.0)
 
 server_ip = None
 start_time = time.time()
