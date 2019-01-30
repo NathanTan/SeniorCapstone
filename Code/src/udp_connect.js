@@ -68,10 +68,6 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
     let sc1 = dgram.createSocket({ type: 'udp4', reuseAddr: true })
 
     // Broadcast our message to all the IP addresses at the local network until we obtain a response
-    sc1.bind(function () {
-       sc1.setBroadcast(true); 
-    });
-
     let interval_id = setInterval(function() {
         if (interval_id === undefined) return;
 
@@ -81,6 +77,10 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
         });
 
     }, BROADCAST_INTERVAL);
+
+    sc1.bind(BROADCAST_SEND_PORT, function () {
+        sc1.setBroadcast(true); 
+    });
 
     // Setup a listener
     let sc2 = dgram.createSocket({ type: 'udp4', reuseAddr: true })
@@ -106,7 +106,7 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
     });
 
     // Listen for broadcast messages at BROADCAST_RECEIVE_PORT
-    server.bind(BROADCAST_RECEIVE_PORT, function() {
+    sc2.bind(BROADCAST_RECEIVE_PORT, function() {
         sc2.setBroadcast(true);
     });
 }

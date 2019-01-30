@@ -59,6 +59,7 @@ print("Sending response to " + str(server_ip) + ":" + str(SERVER_RESPONSE_PORT))
 sc2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sc2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sc2.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 0)
+sc2.bind(("", SERVER_RESPONSE_PORT))
 start_time = time.time()
 while True:
     sc2.sendto(SERVER_RESPONSE_MESSAGE.encode("utf-8"), (server_ip, SERVER_RESPONSE_PORT))
