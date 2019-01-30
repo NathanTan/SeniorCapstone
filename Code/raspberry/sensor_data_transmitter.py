@@ -26,6 +26,7 @@ if len(server_ip) == 0:
 # Create a UDP socket
 sc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+sc.bind(("", PORT))
 
 data = {}
 
@@ -37,3 +38,5 @@ while True:
     # Send data
     sc.sendto(json.dumps(data).encode("utf-8"), (server_ip, PORT))
     time.sleep(0.1) # just for fun
+
+sc.close()
