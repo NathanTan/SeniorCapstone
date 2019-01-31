@@ -31,7 +31,8 @@ https://www.hacksparrow.com/node-js-udp-server-and-client-example.html
 var dgram = require('dgram');
 
 var os = require('os');
-var ifaces = os.networkInterfaces();
+
+/*var ifaces = os.networkInterfaces();
 
 Object.keys(ifaces).forEach(function (ifname) {
   var alias = 0;
@@ -51,13 +52,13 @@ Object.keys(ifaces).forEach(function (ifname) {
     }
     ++alias;
   });
-});
+});*/
 
 const BROADCAST_SEND_PORT = 57901;
 const BROADCAST_RECEIVE_PORT = 57902;
-const BROADCAST_IP = '255.255.255.255';
-const BROADCAST_SEND_MESSAGE = new Buffer('Beaver-Hawks1');
-const BROADCAST_RECEIVE_MESSAGE = new Buffer('Beaver-Hawks2');
+const MULTICAST_ADDRESS = '230.168.0.105'; //'255.255.255.255';
+const BROADCAST_SEND_MESSAGE = Buffer.from('Beaver-Hawks1');
+const BROADCAST_RECEIVE_MESSAGE = Buffer.from('Beaver-Hawks2');
 const BROADCAST_INTERVAL = 500; // in ms
 
 const RECEIVE_SENSOR_DATA_PORT = 57903;
@@ -67,19 +68,21 @@ const RECEIVE_VIDEO2_PORT = 57905;
 function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2) {
     let sc1 = dgram.createSocket({ type: 'udp4', reuseAddr: true })
 
-    // Broadcast our message to all the IP addresses at the local network until we obtain a response
+    // Multicast our message to all the IP addresses at the local network until we obtain a response
     let interval_id = setInterval(function() {
         if (interval_id === undefined) return;
 
-        sc1.send(BROADCAST_SEND_MESSAGE, 0, BROADCAST_SEND_MESSAGE.length, BROADCAST_SEND_PORT, BROADCAST_IP, function(err, bytes) {
+        sc1.send(BROADCAST_SEND_MESSAGE, 0, BROADCAST_SEND_MESSAGE.length, BROADCAST_SEND_PORT, MULTICAST_ADDRESS, function(err) {
             if (err) throw err;
-            console.log('Server broadcasting to ' + BROADCAST_IP + ':' + BROADCAST_SEND_PORT);
         });
+        console.log('Server broadcasting to ' + MULTICAST_ADDRESS + ':' + BROADCAST_SEND_PORT);
 
     }, BROADCAST_INTERVAL);
 
     sc1.bind(BROADCAST_SEND_PORT, function () {
         sc1.setBroadcast(true); 
+        sc1.addMembership(MULTICAST_ADDRESS);
+        sc1.setMulticastTTL(128);
     });
 
     // Setup a listener
@@ -97,6 +100,7 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
             clearInterval(interval_id);
             interval_id = undefined;
             // close the socket
+            sc1.close();
             sc2.close();
             // setup sockets for each type of data
             initiateSensorDataReceiver(onReceiveSensorData, remote.address);
@@ -108,6 +112,8 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
     // Listen for broadcast messages at BROADCAST_RECEIVE_PORT
     sc2.bind(BROADCAST_RECEIVE_PORT, function() {
         sc2.setBroadcast(true);
+        sc2.addMembership(MULTICAST_ADDRESS);
+        sc2.setMulticastTTL(128);
     });
 }
 

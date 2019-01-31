@@ -2,12 +2,14 @@ import socket
 import datetime
 import time
 import sys
+import struct
 import os
 import subprocess
 
 SERVER_IP_FNAME = "server-ip-address"
 SPAWNED_PROCESSES_FNAME = "spawned-processes"
 
+MULTICAST_ADDRESS = '230.168.0.105'
 MAX_BROADCAST_RECEIVE_DURATION = 60  # in seconds
 BROADCAST_RECEIVE_PORT = 57901
 BROADCAST_RECEIVE_MESSAGE = "Beaver-Hawks1"
@@ -24,7 +26,11 @@ if os.path.exists(SERVER_IP_FNAME):
 # Listen for broadcast for at most BROADCAST_RECEIVE_DURATION seconds
 sc1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sc1.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+#sc1.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+group = socket.inet_aton(MULTICAST_ADDRESS)
+mreq = struct.pack('4sL', group, socket.INADDR_ANY)
+sc1.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+
 sc1.bind(("", BROADCAST_RECEIVE_PORT))
 sc1.settimeout(1.0)
 
@@ -34,6 +40,7 @@ while True:
     try:
         data, address = sc1.recvfrom(1024)
         msg = data.decode("utf-8")
+        print(msg)
         if msg == BROADCAST_RECEIVE_MESSAGE:
             server_ip = address[0]
             print("Request received from: " +
@@ -58,7 +65,11 @@ if server_ip is None:
 print("Sending response to " + str(server_ip) + ":" + str(SERVER_RESPONSE_PORT))
 sc2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sc2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sc2.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 0)
+#sc2.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+#ttl = struct.pack('b', 128)
+#sc2.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
+
+#sc2.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 0)
 sc2.bind(("", SERVER_RESPONSE_PORT))
 start_time = time.time()
 while True:
