@@ -56,7 +56,8 @@ Object.keys(ifaces).forEach(function (ifname) {
 
 const BROADCAST_SEND_PORT = 57901;
 const BROADCAST_RECEIVE_PORT = 57902;
-const MULTICAST_ADDRESS = '224.0.0.1'; //'255.255.255.255';
+// https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
+const MULTICAST_ADDRESS = '239.192.0.1';
 const BROADCAST_SEND_MESSAGE = Buffer.from('Beaver-Hawks1');
 const BROADCAST_RECEIVE_MESSAGE = Buffer.from('Beaver-Hawks2');
 const BROADCAST_INTERVAL = 500; // in ms
@@ -80,8 +81,8 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
     }, BROADCAST_INTERVAL);
 
     sc1.bind(BROADCAST_SEND_PORT, function () {
-        sc1.setBroadcast(true); 
-        //sc1.addMembership(MULTICAST_ADDRESS);
+        //sc1.setBroadcast(true); 
+        sc1.addMembership(MULTICAST_ADDRESS);
         sc1.setMulticastTTL(128);
     });
 
@@ -111,8 +112,8 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
 
     // Listen for broadcast messages at BROADCAST_RECEIVE_PORT
     sc2.bind(BROADCAST_RECEIVE_PORT, function() {
-        sc2.setBroadcast(true);
-        //sc2.addMembership(MULTICAST_ADDRESS);
+        //sc2.setBroadcast(true);
+        sc2.addMembership(MULTICAST_ADDRESS);
         sc2.setMulticastTTL(128);
     });
 }

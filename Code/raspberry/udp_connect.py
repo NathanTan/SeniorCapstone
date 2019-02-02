@@ -9,7 +9,8 @@ import subprocess
 SERVER_IP_FNAME = "server-ip-address"
 SPAWNED_PROCESSES_FNAME = "spawned-processes"
 
-MULTICAST_ADDRESS = '224.0.0.1'
+# https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
+MULTICAST_ADDRESS = '239.192.0.1'
 MAX_BROADCAST_RECEIVE_DURATION = 60  # in seconds
 BROADCAST_RECEIVE_PORT = 57901
 BROADCAST_RECEIVE_MESSAGE = "Beaver-Hawks1"
