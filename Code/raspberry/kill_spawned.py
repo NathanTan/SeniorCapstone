@@ -9,7 +9,10 @@ if not os.path.isfile(SPAWNED_PROCESSES_FNAME):
 with open(SPAWNED_PROCESSES_FNAME, 'r') as fp:
     line = fp.readline()
     while line:
-        os.kill(int(line), signal.SIGTERM)
+        try:
+            os.kill(int(line), signal.SIGTERM)
+        except:
+            pass
         line = fp.readline()
 
 os.remove(SPAWNED_PROCESSES_FNAME)

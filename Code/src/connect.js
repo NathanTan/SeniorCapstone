@@ -1,6 +1,4 @@
 /*
-UDP Connect
-
 For the following to work, both the server the Raspberry Pi need to be
 connected to a common, local network.
 
@@ -8,8 +6,8 @@ When the server and RPi is turned on, there needs to be a way for the server
 and the RPi to become aware of eachothers IP addresses.
 
 One way to establish connection is by updating host IP addresses manually,
-for both the server and RPi code. This is not user-friendly, especially when you
-know that the MAV is going to be operated from different networks.
+for both the server and the RPi code. This is not user-friendly, especially
+since the MAV is going to be operated from different networks.
 
 To determine the IP addresses, the following protocol is established:
 1. Upon booting up, the RPi initiates a UDP multicast listener, for a
@@ -18,13 +16,17 @@ To determine the IP addresses, the following protocol is established:
 2. When the server is launched, the server multicasts a special message, to the
    known port. The message is multicasted every 0.5 secods, until a response is
    received.
-3. The server also starts a listener, to acquire a response from the RPi.
+3. The server also starts a listener to acquire a response from the RPi.
 4. Upon receiving a multicast messsage from the server, the RPi saves the IP
    address of the server, stops the listener, and sends a response to the
-   server's IP address for 2 seconds, to ensure the server receives the message.
-5. The RPi then initiates a sender UDP, with now the host IP address of the
-   server.
-6. Upon receiving the response, the server initiates video and sensor listeners.
+   server's IP address for a duration of 2 seconds, to ensure the server
+   receives the message.
+5. Upon receiving the response, the server initiates video and sensor listeners.
+6. After echoing a response for 2 seconds, the RPi initiates three background
+   processes for transmitting video and sensor data to the MAV asynchronously.
+7. Following that, the RPi also establishes a TCP connection with the server for
+   listenning to the important bits.
+8. After the TCP connection terminates, all the spawned processes are killed.
 
 https://www.hacksparrow.com/node-js-udp-server-and-client-example.html
 
@@ -69,7 +71,11 @@ const RECEIVE_SENSOR_DATA_PORT = 57903;
 const RECEIVE_VIDEO1_PORT = 57904;
 const RECEIVE_VIDEO2_PORT = 57905;
 
-function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2) {
+const TCP_PORT = 57800;
+
+let tpc_client = undefined;
+
+function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImporantData) {
     let sc1 = dgram.createSocket({ type: 'udp4', reuseAddr: true })
 
     // Multicast our message to all the IP addresses at the local network until we obtain a response
@@ -110,6 +116,7 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
             initiateSensorDataReceiver(onReceiveSensorData, remote.address);
             initiateVideo1Receiver(onReceiveVideo1, remote.address);
             initiateVideo2Receiver(onReceiveVideo2, remote.address);
+            initiateTCPConnection(onReceiveImporantData, remote.address);
         }
     });
 
@@ -161,7 +168,31 @@ function initiateVideo2Receiver(callback, ip) {
     return server;
 }
 
+function initiateTCPConnection(callback, ip) {
+    tpc_client = net.Socket();
+    tpc_client.connect(TCP_PORT, ip, function() {
+        console.log('TCP connection established');
+    });
+
+    tpc_client.on('data', function(data) {
+        let msg = message.toString('utf8');
+        console.log("TCP message received: " + msg);
+        callback(JSON.parse(msg));
+    });
+
+    tpc_client.on('close', function() {
+        console.log("TCP connection closed");
+        tpc_client = undefined;
+    });
+}
+
+function sendJsonToMAV(data) {
+    if (tcp_client === undefined) return;
+    let buffer = Buffer.from(JSON.stringify(data));
+    tcp_client.write(buffer);
+}
+
 module.exports = {
-    // Returns a float, representing heiht in inches.
-    establishConnection: establishConnection
+    establishConnection: establishConnection,
+    sendJsonToMAV: sendJsonToMAV
 }
