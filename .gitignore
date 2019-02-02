@@ -2,3 +2,6 @@
 /Code/package-lock.json
 /node_modules
 /package-lock.json
+
+/Code/raspberry/spawned-processes
+/Code/raspberry/server-ip-address

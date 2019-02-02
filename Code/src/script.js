@@ -15,7 +15,18 @@ let colWarFrontSonar = undefined;
 
 function updateHTMLContent(data) {
   if (!bReady) return;
-  document.getElementById("height").innerHTML = data.height.toString();
+
+  if (data.height !== undefined) {
+    document.getElementById("height").innerHTML = data.height.toString();
+  }
+
+  if (data.speed !== undefined) {
+    document.getElementById("speed").innerHTML = data.speed.toString();
+  }
+  else {
+    document.getElementById("speed").innerHTML = "NONE";
+  }
+
   colWarFrontSonar.style.fill = data.frontSonarColor;
   colWarLeftSonar.style.fill = data.leftSonarColor;
   colWarRightSonar.style.fill = data.rightSonarColor;
@@ -40,10 +51,6 @@ setInterval(function () {
 var switchBottomView = document.getElementsByClassName("BottomFeed");
 var switchDepthMap = document.getElementsByClassName("DepthMap");
 
-console.log(switchBottomView)
-//switchBottomView[0].style.display = "none";
-//switchDepthMap[0].style.display = "block";
-
 document.addEventListener("keyup", function (event) {
   // Cancel the default action, if needed
   event.preventDefault();
@@ -53,13 +60,16 @@ document.addEventListener("keyup", function (event) {
     switchDepthMap[0].style.display = "block";
   }
   if (event.keyCode === 13) {
-    console.log("PICKUP MODE");
+    console.log("DEPTH-MAP MODE");
     switchBottomView[0].style.display = "block";
     switchDepthMap[0].style.display = "none";
   }
 });
 
 function doOnReady() {
+  switchBottomView[0].style.display = "none";
+  switchDepthMap[0].style.display = "block";
+
   colWarLeftSonar = document.querySelector("#colWarLeftSonar").getSVGDocument().getElementById("path78");
   colWarRightSonar = document.querySelector("#colWarRightSonar").getSVGDocument().getElementById("path78");
   colWarFrontSonar = document.querySelector("#colWarFrontSonar").getSVGDocument().getElementById("path78");

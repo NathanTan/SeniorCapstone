@@ -3,6 +3,23 @@ const fetch = require('node-fetch')
 let path = require('path')
 
 const sdgen = require('./src/sensor_data_generator') // sensor data generator
+const updc = require('./src/udp_connect')
+
+
+// -----------------------------------------------------------------------------
+// >>> Helpers
+// -----------------------------------------------------------------------------
+
+function merge_dictionaries(din, dout) {
+    for (i in din) {
+        dout[i] = din[i];
+    }
+}
+
+
+// -----------------------------------------------------------------------------
+// >>> Main
+// -----------------------------------------------------------------------------
 
 //Jan 23: not sure how the data will look when piped off MAV. Best guess for now, feel free to change.
 //Jan 23: X is forward/back, Y is SidetoSide, Z is verticle. Is there a standard in flight?
@@ -44,3 +61,19 @@ setInterval(function() {
     flightVars.rightSonarColor = sdgen.getRightSonarColor(t);
 
 }, 10);
+
+
+// Data Receivers
+function onReceiveSensorData(data) {
+    merge_dictionaries(data, flightVars);
+}
+
+function onReceiveVideo1(data) {
+    //console.log("Video1: " + data);
+}
+
+function onReceiveVideo2(data) {
+    //console.log("Video2: " + data);
+}
+
+updc.establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2);
