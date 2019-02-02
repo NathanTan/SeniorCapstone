@@ -7,12 +7,24 @@ Matthew Phillips<br/>
 Shanmukh Challa<br/>
 Nathan Tan<br/>
 
-
 # Starting Server
 ```bash
 cd Code/
 npm i
 npm start
+```
+
+# Starting Pi
+Upload the <tt>/Code/raspberry</tt> folder to into your raspberry pi's home directory.
+
+Provided, both the raspberry pi and the server are in a common network, when starting a server, also run the following from raspberry:
+```python
+python raspberry/udp_connect.py
+```
+
+After ending the server, run the following from raspberry to kill the background processes:
+```python
+python raspberry/kill_spawned.py
 ```
 
 # LaTex Graphic Rules
