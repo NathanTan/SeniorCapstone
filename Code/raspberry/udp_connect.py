@@ -11,9 +11,9 @@ SPAWNED_PROCESSES_FNAME = "spawned-processes"
 
 # https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
 MULTICAST_ADDRESS = '239.192.0.1'
-MAX_BROADCAST_RECEIVE_DURATION = 60  # in seconds
-BROADCAST_RECEIVE_PORT = 57901
-BROADCAST_RECEIVE_MESSAGE = "Beaver-Hawks1"
+MAX_MULTICAST_RECEIVE_DURATION = 60  # in seconds
+MULTICAST_RECEIVE_PORT = 57901
+MULTICAST_RECEIVE_MESSAGE = "Beaver-Hawks1"
 
 SERVER_RESPONCE_DURATION = 2  # in seconds
 SERVER_RESPONSE_TIMEOUT = 0.1  # in seconds
@@ -24,18 +24,18 @@ SERVER_RESPONSE_MESSAGE = "Beaver-Hawks2"
 if os.path.exists(SERVER_IP_FNAME):
     os.remove(SERVER_IP_FNAME)
 
-# Listen for broadcast for at most BROADCAST_RECEIVE_DURATION seconds
+# Listen for multicast for at most MULTICAST_RECEIVE_DURATION seconds
 sc1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sc1.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+#sc1.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 group = socket.inet_aton(MULTICAST_ADDRESS)
 mreq = struct.pack('4sL', group, socket.INADDR_ANY)
 sc1.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
-sc1.bind(("", BROADCAST_RECEIVE_PORT))
+sc1.bind(("", MULTICAST_RECEIVE_PORT))
 sc1.settimeout(1.0)
 
-print("Listening for data at " + MULTICAST_ADDRESS + ":" + str(BROADCAST_RECEIVE_PORT))
+print("Listening for data at " + MULTICAST_ADDRESS + ":" + str(MULTICAST_RECEIVE_PORT))
 server_ip = None
 start_time = time.time()
 while True:
@@ -43,7 +43,7 @@ while True:
         data, address = sc1.recvfrom(1024)
         msg = data.decode("utf-8")
         print(msg)
-        if msg == BROADCAST_RECEIVE_MESSAGE:
+        if msg == MULTICAST_RECEIVE_MESSAGE:
             server_ip = address[0]
             print("Request received from: " +
                   str(address[0]) + ":" + str(address[1]) + " - " + msg)
@@ -52,7 +52,7 @@ while True:
     except socket.error:
         pass
     elapsed = time.time() - start_time
-    if elapsed >= MAX_BROADCAST_RECEIVE_DURATION:
+    if elapsed >= MAX_MULTICAST_RECEIVE_DURATION:
         break
 
 # Close the socket
@@ -61,7 +61,7 @@ sc1.close()
 # Validate
 if server_ip is None:
     raise OSError("Did not receive any requests from server within " +
-                  str(MAX_BROADCAST_RECEIVE_DURATION) + " seconds.")
+                  str(MAX_MULTICAST_RECEIVE_DURATION) + " seconds.")
 
 # Send a response to the server
 print("Sending response to " + str(server_ip) + ":" + str(SERVER_RESPONSE_PORT))

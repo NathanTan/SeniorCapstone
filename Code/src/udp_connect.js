@@ -12,23 +12,26 @@ for both the server and RPi code. This is not user-friendly, especially when you
 know that the MAV is going to be operated from different networks.
 
 To determine the IP addresses, the following protocol is established:
-1. Upon booting up, the RPi initiates a UDP broadcast listener, for a
-    maximum of 60 seconds. The listener receives a broadcast at a certain port,
-    known to both the server and the RPi.
-2. When the server is launched, the server broadcasts a special message, to the
-    known port. The message is broadcasted every 0.5 secods, for a maximum of 60
-    seconds.
+1. Upon booting up, the RPi initiates a UDP multicast listener, for a
+   maximum of 60 seconds. The listener receives a multicast at a certain port,
+   known to both the server and the RPi.
+2. When the server is launched, the server multicasts a special message, to the
+   known port. The message is multicasted every 0.5 secods, until a response is
+   received.
 3. The server also starts a listener, to acquire a response from the RPi.
-4. Upon receiving a broadcast messsage from the server, the RPi saves the IP
-    address of the server, stops the listener, and initiates a sender UDP, with
-    now the host IP addresss of the server.
-4. The RPi sends a response,
+4. Upon receiving a multicast messsage from the server, the RPi saves the IP
+   address of the server, stops the listener, and sends a response to the
+   server's IP address for 2 seconds, to ensure the server receives the message.
+5. The RPi then initiates a sender UDP, with now the host IP address of the
+   server.
+6. Upon receiving the response, the server initiates video and sensor listeners.
 
 https://www.hacksparrow.com/node-js-udp-server-and-client-example.html
 
 */
 
-var dgram = require('dgram');
+var dgram = require('dgram'); // udp
+var net = require('net'); // tcp
 
 var os = require('os');
 
@@ -54,13 +57,13 @@ Object.keys(ifaces).forEach(function (ifname) {
   });
 });*/
 
-const BROADCAST_SEND_PORT = 57901;
-const BROADCAST_RECEIVE_PORT = 57902;
+const MULTICAST_SEND_PORT = 57901;
+const RESPONSE_RECEIVE_PORT = 57902;
 // https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
 const MULTICAST_ADDRESS = '239.192.0.1';
-const BROADCAST_SEND_MESSAGE = Buffer.from('Beaver-Hawks1');
-const BROADCAST_RECEIVE_MESSAGE = Buffer.from('Beaver-Hawks2');
-const BROADCAST_INTERVAL = 500; // in ms
+const MULTICAST_SEND_MESSAGE = Buffer.from('Beaver-Hawks1');
+const RECEIVE_MESSAGE = Buffer.from('Beaver-Hawks2');
+const MULTICAST_INTERVAL = 500; // in ms
 
 const RECEIVE_SENSOR_DATA_PORT = 57903;
 const RECEIVE_VIDEO1_PORT = 57904;
@@ -73,15 +76,15 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
     let interval_id = setInterval(function() {
         if (interval_id === undefined) return;
 
-        sc1.send(BROADCAST_SEND_MESSAGE, 0, BROADCAST_SEND_MESSAGE.length, BROADCAST_SEND_PORT, MULTICAST_ADDRESS, function(err) {
+        sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, MULTICAST_ADDRESS, function(err) {
             if (err) throw err;
         });
-        console.log('Server broadcasting to ' + MULTICAST_ADDRESS + ':' + BROADCAST_SEND_PORT);
+        console.log('Server multicasting to ' + MULTICAST_ADDRESS + ':' + MULTICAST_SEND_PORT);
 
-    }, BROADCAST_INTERVAL);
+    }, MULTICAST_INTERVAL);
 
-    sc1.bind(BROADCAST_SEND_PORT, function () {
-        //sc1.setBroadcast(true); 
+    sc1.bind(MULTICAST_SEND_PORT, function () {
+        //sc1.setBroadcast(true);
         sc1.addMembership(MULTICAST_ADDRESS);
         sc1.setMulticastTTL(128);
     });
@@ -93,9 +96,9 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
         console.log('Server listening on ' + address.address + ':' + address.port);
     });
 
-    // Listen for the response
+    // Listen for a response
     sc2.on('message', function (message, remote) {
-        if (Buffer.compare(message, BROADCAST_RECEIVE_MESSAGE) == 0 && interval_id !== undefined) {
+        if (Buffer.compare(message, RECEIVE_MESSAGE) == 0 && interval_id !== undefined) {
             console.log('Response received from ' + remote.address + ':' + remote.port + ' - ' + message);
             // stop the ping
             clearInterval(interval_id);
@@ -110,11 +113,11 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
         }
     });
 
-    // Listen for broadcast messages at BROADCAST_RECEIVE_PORT
-    sc2.bind(BROADCAST_RECEIVE_PORT, function() {
+    // Listen for messages comming all interfaces of this device, at RESPONSE_RECEIVE_PORT
+    sc2.bind(RESPONSE_RECEIVE_PORT, function() {
         //sc2.setBroadcast(true);
-        sc2.addMembership(MULTICAST_ADDRESS);
-        sc2.setMulticastTTL(128);
+        //sc2.addMembership(MULTICAST_ADDRESS);
+        //sc2.setMulticastTTL(128);
     });
 }
 
