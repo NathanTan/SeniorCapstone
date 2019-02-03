@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 let path = require('path')
 
 const sdgen = require('./src/sensor_data_generator') // sensor data generator
-const connect = require('./src/connect')
+const connector = require('./src/connect')
 
 
 // -----------------------------------------------------------------------------
@@ -81,7 +81,7 @@ function onReceiveImportantData(data) {
     console.log("Imporatnat data: " + data);
 }
 
-connect.establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData);
+connector.establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData);
 
 /*setInterval(function() {
     let data = {

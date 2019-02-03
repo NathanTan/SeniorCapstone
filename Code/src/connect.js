@@ -33,7 +33,7 @@ https://www.hacksparrow.com/node-js-udp-server-and-client-example.html
 */
 
 var dgram = require('dgram'); // udp
-var net = require('net'); // tcp
+//var net = require('net'); // tcp
 
 var os = require('os');
 
@@ -132,12 +132,15 @@ function initiateSensorDataReceiver(callback, ip) {
     let server = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
     server.on('message', function (message, remote) {
-        console.log(remote.address + ":" + remote.port);
+        console.log("message receied");
+        console.log(remote.address + ":" + remote.port.toString());
         if (remote.address != ip) return; // Accept connection with the established IP only
         callback(JSON.parse(message.toString('utf8')));
     });
 
     server.bind(RECEIVE_SENSOR_DATA_PORT);
+
+    console.log("binded " + ip + ":" + RECEIVE_SENSOR_DATA_PORT.toString());
 
     return server;
 }
@@ -146,6 +149,7 @@ function initiateVideo1Receiver(callback, ip) {
     let server = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
     server.on('message', function (message, remote) {
+        console.log(remote.address + ":" + remote.port.toString());
         if (remote.address != ip) return; // Accept connection with the established IP only
         callback(message.toString('utf8'));
     });
@@ -159,6 +163,7 @@ function initiateVideo2Receiver(callback, ip) {
     let server = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
     server.on('message', function (message, remote) {
+        console.log(remote.address + ":" + remote.port.toString());
         if (remote.address != ip) return; // Accept connection with the established IP only
         callback(message.toString('utf8'));
     });
@@ -168,6 +173,7 @@ function initiateVideo2Receiver(callback, ip) {
     return server;
 }
 
+/*
 function initiateTCPConnection(callback, ip) {
     let client = net.Socket();
     client.connect(TCP_PORT, ip, function() {
@@ -194,8 +200,9 @@ function sendJSONToMAV(data) {
     let buffer = Buffer.from(JSON.stringify(data));
     tcp_client.write(buffer);
 }
+*/
 
 module.exports = {
     establishConnection: establishConnection,
-    sendJSONToMAV: sendJSONToMAV
+    //sendJSONToMAV: sendJSONToMAV
 }

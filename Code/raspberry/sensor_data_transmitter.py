@@ -37,6 +37,8 @@ while True:
     data["speed"] = random.randint(0, 1000)
     # Send data
     sc.sendto(json.dumps(data).encode("utf-8"), (server_ip, PORT))
+    #print("sent data to " + server_ip + " : " + str(PORT))
+    #sys.stdout.flush()
     time.sleep(0.1) # just for fun
 
 sc.close()
