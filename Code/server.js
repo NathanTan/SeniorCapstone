@@ -66,7 +66,7 @@ setInterval(function() {
 // Data Receivers
 function onReceiveSensorData(data) {
     merge_dictionaries(data, flightVars);
-	console.log("Sensor data: " + data);
+	//console.log("Sensor: " + JSON.stringify(data));
 }
 
 function onReceiveVideo1(data) {
@@ -77,15 +77,23 @@ function onReceiveVideo2(data) {
     //console.log("Video2: " + data);
 }
 
+// TCP data comes here
 function onReceiveImportantData(data) {
-    console.log("Imporatnat data: " + data);
+    console.log("Important data: " + data);
 }
 
 connector.establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData);
 
+// Sending data to server via TCP
+//connector.sendJSONToMAV(data);
+
+// To send data from the client side, we need to add a post fetcher at the client side that calls some
+// function at the server side, that calls the sendJSONToMAV function with data.
+
 /*setInterval(function() {
     let data = {
-        stuff: Math.random()
+        stuff: Math.random(),
+        lights: true
     };
-    connect.sendJSONToMAV(data);
+    connector.sendJSONToMAV(data);
 }, 500);*/

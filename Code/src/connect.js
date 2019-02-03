@@ -32,10 +32,10 @@ https://www.hacksparrow.com/node-js-udp-server-and-client-example.html
 
 */
 
-var dgram = require('dgram'); // udp
-//var net = require('net'); // tcp
+var dgram = require("dgram"); // udp
+var net = require("net"); // tcp
 
-var os = require('os');
+var os = require("os");
 
 /*var ifaces = os.networkInterfaces();
 
@@ -43,14 +43,14 @@ Object.keys(ifaces).forEach(function (ifname) {
   var alias = 0;
 
   ifaces[ifname].forEach(function (iface) {
-    if ('IPv4' !== iface.family || iface.internal !== false) {
+    if ("IPv4" !== iface.family || iface.internal !== false) {
       // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
       return;
     }
 
     if (alias >= 1) {
       // this single interface has multiple ipv4 addresses
-      console.log(ifname + ':' + alias, iface.address);
+      console.log(ifname + ":" + alias, iface.address);
     } else {
       // this interface has only one ipv4 adress
       console.log(ifname, iface.address);
@@ -62,9 +62,9 @@ Object.keys(ifaces).forEach(function (ifname) {
 const MULTICAST_SEND_PORT = 57901;
 const RESPONSE_RECEIVE_PORT = 57902;
 // https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
-const MULTICAST_ADDRESS = '239.192.0.1';
-const MULTICAST_SEND_MESSAGE = Buffer.from('Beaver-Hawks1');
-const RECEIVE_MESSAGE = Buffer.from('Beaver-Hawks2');
+const MULTICAST_ADDRESS = "239.192.0.1";
+const MULTICAST_SEND_MESSAGE = Buffer.from("Beaver-Hawks1");
+const RECEIVE_MESSAGE = Buffer.from("Beaver-Hawks2");
 const MULTICAST_INTERVAL = 500; // in ms
 
 const RECEIVE_SENSOR_DATA_PORT = 57903;
@@ -76,7 +76,7 @@ const TCP_PORT = 1337;
 let tcp_client = undefined;
 
 function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData) {
-    let sc1 = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+    let sc1 = dgram.createSocket({ type: "udp4", reuseAddr: true });
 
     sc1.bind(MULTICAST_SEND_PORT);
 
@@ -90,26 +90,26 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
             sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, MULTICAST_ADDRESS, function(err) {
                 if (err) throw err;
             });
-            console.log('Server multicasting to ' + MULTICAST_ADDRESS + ':' + MULTICAST_SEND_PORT);
+            console.log("Server multicasting to " + MULTICAST_ADDRESS + ":" + MULTICAST_SEND_PORT);
     
         }, MULTICAST_INTERVAL);
     });
 
     // Setup a listener
-    let sc2 = dgram.createSocket({ type: 'udp4', reuseAddr: true })
+    let sc2 = dgram.createSocket({ type: "udp4", reuseAddr: true })
 
     // Listen for messages comming all interfaces of this device, at RESPONSE_RECEIVE_PORT
     sc2.bind(RESPONSE_RECEIVE_PORT);
 
-    sc2.on('listening', function () {
+    sc2.on("listening", function () {
         let address = sc2.address();
-        console.log('Server listening on ' + address.address + ':' + address.port);
+        console.log("Server listening on " + address.address + ":" + address.port);
     });
 
     // Listen for a response
-    sc2.on('message', function (message, remote) {
+    sc2.on("message", function (message, remote) {
         if (Buffer.compare(message, RECEIVE_MESSAGE) == 0 && interval_id !== undefined) {
-            console.log('Response received from ' + remote.address + ':' + remote.port + ' - ' + message);
+            console.log("Response received from " + remote.address + ":" + remote.port + " - " + message);
             // stop the ping
             clearInterval(interval_id);
             interval_id = undefined;
@@ -120,35 +120,32 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
             initiateSensorDataReceiver(onReceiveSensorData, remote.address);
             initiateVideo1Receiver(onReceiveVideo1, remote.address);
             initiateVideo2Receiver(onReceiveVideo2, remote.address);
-            //initiateTCPConnection(onReceiveImportantData, remote.address);
+            initiateTCPConnection(onReceiveImportantData, remote.address);
         }
     });
 }
 
 function initiateSensorDataReceiver(callback, ip) {
-    let server = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+    let server = dgram.createSocket({ type: "udp4", reuseAddr: true });
 
-    server.on('message', function (message, remote) {
-        console.log("message receied");
-        console.log(remote.address + ":" + remote.port.toString());
+    server.on("message", function (message, remote) {
         if (remote.address != ip) return; // Accept connection with the established IP only
-        callback(JSON.parse(message.toString('utf8')));
+        //console.log("Sensor data: " + remote.address + ":" + remote.port.toString());
+        callback(JSON.parse(message.toString("utf8")));
     });
 
     server.bind(RECEIVE_SENSOR_DATA_PORT);
-
-    console.log("binded " + ip + ":" + RECEIVE_SENSOR_DATA_PORT.toString());
 
     return server;
 }
 
 function initiateVideo1Receiver(callback, ip) {
-    let server = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+    let server = dgram.createSocket({ type: "udp4", reuseAddr: true });
 
-    server.on('message', function (message, remote) {
-        console.log(remote.address + ":" + remote.port.toString());
+    server.on("message", function (message, remote) {
         if (remote.address != ip) return; // Accept connection with the established IP only
-        callback(message.toString('utf8'));
+        //console.log("Video 1: " + remote.address + ":" + remote.port.toString());
+        callback(message.toString("utf8"));
     });
 
     server.bind(RECEIVE_VIDEO1_PORT);
@@ -157,12 +154,12 @@ function initiateVideo1Receiver(callback, ip) {
 }
 
 function initiateVideo2Receiver(callback, ip) {
-    let server = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+    let server = dgram.createSocket({ type: "udp4", reuseAddr: true });
 
-    server.on('message', function (message, remote) {
-        console.log(remote.address + ":" + remote.port.toString());
+    server.on("message", function (message, remote) {
         if (remote.address != ip) return; // Accept connection with the established IP only
-        callback(message.toString('utf8'));
+        //console.log("Video 2: " + remote.address + ":" + remote.port.toString());
+        callback(message.toString("utf8"));
     });
 
     server.bind(RECEIVE_VIDEO2_PORT);
@@ -170,36 +167,32 @@ function initiateVideo2Receiver(callback, ip) {
     return server;
 }
 
-/*
 function initiateTCPConnection(callback, ip) {
     let client = net.Socket();
     client.connect(TCP_PORT, ip, function() {
-        console.log('TCP connection established');
+        console.log("TCP connection established");
         tcp_client = client;
     });
 
-    client.on('data', function(data) {
-        let msg = message.toString('utf8');
+    client.on("data", function(data) {
+        let msg = message.toString("utf8");
         console.log("TCP message received: " + msg);
         callback(JSON.parse(msg));
     });
 
-    client.on('close', function() {
+    client.on("close", function() {
         console.log("TCP connection closed");
         tcp_client = undefined;
     });
 }
 
 function sendJSONToMAV(data) {
-    if (tcp_client === undefined) {
-        return;
+    if (tcp_client !== undefined) {
+        tcp_client.write(JSON.stringify(data).toString("utf8"));
     }
-    let buffer = Buffer.from(JSON.stringify(data));
-    tcp_client.write(buffer);
 }
-*/
 
 module.exports = {
     establishConnection: establishConnection,
-    //sendJSONToMAV: sendJSONToMAV
+    sendJSONToMAV: sendJSONToMAV
 }
