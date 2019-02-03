@@ -31,12 +31,22 @@ if os.path.exists(SERVER_IP_FNAME):
 # Listen for multicast for at most MULTICAST_RECEIVE_DURATION seconds
 sc1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-#sc1.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-group = socket.inet_aton(MULTICAST_ADDRESS)
-mreq = struct.pack('4sL', group, socket.INADDR_ANY)
-sc1.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+sc1.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32) 
+sc1.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
 
-sc1.bind(("", MULTICAST_RECEIVE_PORT))
+sc1.bind(('', MULTICAST_RECEIVE_PORT))
+
+host = socket.gethostbyname(socket.gethostname())
+print(host)
+print(socket.inet_aton(host))
+
+sc1.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
+sc1.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(MULTICAST_ADDRESS) + socket.inet_aton(host))
+
+#sc1.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+#group = socket.inet_aton(MULTICAST_ADDRESS)
+#mreq = struct.pack('4sL', group, socket.inet_aton(host))
+#sc1.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 sc1.settimeout(1.0)
 
 print("Listening for data at " + MULTICAST_ADDRESS + ":" + str(MULTICAST_RECEIVE_PORT))
@@ -44,13 +54,13 @@ server_ip = None
 start_time = time.time()
 while True:
     try:
-        data, address = sc1.recvfrom(64)
+        data, address = sc1.recvfrom(1024)
         msg = data.decode("utf-8")
         print(msg)
+        sys.stdout.flush()
         if msg == MULTICAST_RECEIVE_MESSAGE:
             server_ip = address[0]
-            print("Request received from: " +
-                  str(address[0]) + ":" + str(address[1]) + " - " + msg)
+            print("Request received from: " + str(address[0]) + ":" + str(address[1]) + " - " + msg)
             sys.stdout.flush()
             break
     except socket.error:

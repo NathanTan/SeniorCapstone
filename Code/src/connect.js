@@ -76,27 +76,31 @@ const TCP_PORT = 1337;
 let tcp_client = undefined;
 
 function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData) {
-    let sc1 = dgram.createSocket({ type: 'udp4', reuseAddr: true })
+    let sc1 = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+
+    sc1.bind(MULTICAST_SEND_PORT);
 
     // Multicast our message to all the IP addresses at the local network until we obtain a response
-    let interval_id = setInterval(function() {
-        if (interval_id === undefined) return;
-
-        sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, MULTICAST_ADDRESS, function(err) {
-            if (err) throw err;
-        });
-        console.log('Server multicasting to ' + MULTICAST_ADDRESS + ':' + MULTICAST_SEND_PORT);
-
-    }, MULTICAST_INTERVAL);
-
-    sc1.bind(MULTICAST_SEND_PORT, function () {
-        //sc1.setBroadcast(true);
+    sc1.on("listening", function() {
         sc1.addMembership(MULTICAST_ADDRESS);
-        sc1.setMulticastTTL(128);
+        sc1.setMulticastTTL(1);
+        interval_id = setInterval(function() {
+            if (interval_id === undefined) return;
+    
+            sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, MULTICAST_ADDRESS, function(err) {
+                if (err) throw err;
+            });
+            console.log('Server multicasting to ' + MULTICAST_ADDRESS + ':' + MULTICAST_SEND_PORT);
+    
+        }, MULTICAST_INTERVAL);
     });
 
     // Setup a listener
     let sc2 = dgram.createSocket({ type: 'udp4', reuseAddr: true })
+
+    // Listen for messages comming all interfaces of this device, at RESPONSE_RECEIVE_PORT
+    sc2.bind(RESPONSE_RECEIVE_PORT);
+
     sc2.on('listening', function () {
         let address = sc2.address();
         console.log('Server listening on ' + address.address + ':' + address.port);
@@ -118,13 +122,6 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
             initiateVideo2Receiver(onReceiveVideo2, remote.address);
             //initiateTCPConnection(onReceiveImportantData, remote.address);
         }
-    });
-
-    // Listen for messages comming all interfaces of this device, at RESPONSE_RECEIVE_PORT
-    sc2.bind(RESPONSE_RECEIVE_PORT, function() {
-        //sc2.setBroadcast(true);
-        //sc2.addMembership(MULTICAST_ADDRESS);
-        //sc2.setMulticastTTL(128);
     });
 }
 
