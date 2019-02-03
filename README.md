@@ -20,7 +20,7 @@ Upload the <tt>/Code/raspberry</tt> folder into your Raspberry Pi's home directo
 Provided, both the raspberry pi and the server are in a common network, when starting a server, also run the following from the Raspberry Pi:
 ```bash
 cd Code/raspberry
-python udp_connect.py
+python connect.py
 ```
 
 After ending the server, run the following from the Raspberry Pi to kill all the spawned background processes:

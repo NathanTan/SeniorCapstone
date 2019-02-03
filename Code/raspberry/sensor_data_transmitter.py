@@ -8,6 +8,7 @@ import time
 import socket
 import random
 import json
+import sys
 
 SERVER_IP_FNAME = "server-ip-address"
 PORT = 57903 # This port is for sensor feed
@@ -34,7 +35,6 @@ while True:
     # Do get data here
     # ...
     data["speed"] = random.randint(0, 1000)
-
     # Send data
     sc.sendto(json.dumps(data).encode("utf-8"), (server_ip, PORT))
     time.sleep(0.1) # just for fun

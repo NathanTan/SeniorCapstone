@@ -22,7 +22,7 @@ SERVER_RESPONSE_TIMEOUT = 0.1 # in seconds
 SERVER_RESPONSE_PORT = 57902
 SERVER_RESPONSE_MESSAGE = "Beaver-Hawks2"
 
-TCP_PORT = 57800
+TCP_PORT = 1337
 
 # First remove the original server-ip-address file
 if os.path.exists(SERVER_IP_FNAME):
@@ -67,6 +67,20 @@ if server_ip is None:
     raise OSError("Did not receive any requests from server within " +
                   str(MAX_MULTICAST_RECEIVE_DURATION) + " seconds.")
 
+# What we'll do is create a file to store server's IP address.
+# Other processes can open this file, read the IP, and use the IP in their
+# socket protocols for shipping the data.
+f = open(SERVER_IP_FNAME, "w")
+f.write(server_ip)
+f.close()
+
+# Establish TCP connection for communicating important bits until the connection is terminated
+# sc3 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# print(server_ip)
+# print(TCP_PORT)
+# sc3.bind((server_ip, TCP_PORT))
+# sc3.listen(1)
+
 # Send a response to the server
 print("Sending response to " + str(server_ip) + ":" + str(SERVER_RESPONSE_PORT))
 sc2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -88,16 +102,6 @@ while True:
 # Close the socket
 sc2.close()
 
-# Assuming server received a response, we are now able to send data to the
-# server's IP address.
-
-# What we'll do is create a file to store server's IP address.
-# Other processes can open this file, read the IP, and use the IP in their
-# socket protocols for shipping the data.
-f = open(SERVER_IP_FNAME, "w")
-f.write(server_ip)
-f.close()
-
 # Start data transmission processies
 processes = []
 processes.append(subprocess.Popen(["python", "sensor_data_transmitter.py"]))
@@ -110,29 +114,28 @@ for proc in processes:
     f.write(str(proc.pid) + "\n")
 f.close()
 
-# Establish TCP connection for communicating important bits until the connection is terminated
-sc3 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sc3.bind((server_ip, TCP_PORT))
-sc3.listen(1)
+# Assuming server received a response, we are now able to send data to the
+# server's IP address.
 
-conn, addr = sc3.acccept()
-while True:
-    buf = conn.recv(1024)
-    if not buf: break
-    conn.send(buf) # echo
-    data = json.loads(data.decode("utf-8"))
-    # Do something with data, such as turn on/off stuff
-    print(data)
+# conn, addr = sc3.accept()
+# while True:
+    # buf = conn.recv(1024)
+    # if not buf: break
+    # #conn.send(buf) # echo
+    # #data = json.loads(buf.decode("utf-8"))
+    # # Do something with data, such as turn on/off stuff
+    # print(buf)
+    # sys.stdout.flush()
 
-conn.close()
+#conn.close()
 
 # Kill spawned processes
-for proc in processes:
-    try:
-        proc.kill()
-    except:
-        pass
+# for proc in processes:
+    # try:
+        # proc.kill()
+    # except:
+        # pass
 
-# Delete the spawned processes file, since we already killed the processes at this point.
-if os.path.exists(SPAWNED_PROCESSES_FNAME):
-    os.remove(SPAWNED_PROCESSES_FNAME)
+# # Delete the spawned processes file, since we already killed the processes at this point.
+# if os.path.exists(SPAWNED_PROCESSES_FNAME):
+    # os.remove(SPAWNED_PROCESSES_FNAME)

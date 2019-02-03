@@ -71,11 +71,11 @@ const RECEIVE_SENSOR_DATA_PORT = 57903;
 const RECEIVE_VIDEO1_PORT = 57904;
 const RECEIVE_VIDEO2_PORT = 57905;
 
-const TCP_PORT = 57800;
+const TCP_PORT = 1337;
 
-let tpc_client = undefined;
+let tcp_client = undefined;
 
-function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImporantData) {
+function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData) {
     let sc1 = dgram.createSocket({ type: 'udp4', reuseAddr: true })
 
     // Multicast our message to all the IP addresses at the local network until we obtain a response
@@ -116,7 +116,7 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
             initiateSensorDataReceiver(onReceiveSensorData, remote.address);
             initiateVideo1Receiver(onReceiveVideo1, remote.address);
             initiateVideo2Receiver(onReceiveVideo2, remote.address);
-            initiateTCPConnection(onReceiveImporantData, remote.address);
+            //initiateTCPConnection(onReceiveImportantData, remote.address);
         }
     });
 
@@ -132,8 +132,8 @@ function initiateSensorDataReceiver(callback, ip) {
     let server = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
     server.on('message', function (message, remote) {
-        if (remote.address != ip) return; // Accept connection with the established IP only
         console.log(remote.address + ":" + remote.port);
+        if (remote.address != ip) return; // Accept connection with the established IP only
         callback(JSON.parse(message.toString('utf8')));
     });
 
@@ -169,30 +169,33 @@ function initiateVideo2Receiver(callback, ip) {
 }
 
 function initiateTCPConnection(callback, ip) {
-    tpc_client = net.Socket();
-    tpc_client.connect(TCP_PORT, ip, function() {
+    let client = net.Socket();
+    client.connect(TCP_PORT, ip, function() {
         console.log('TCP connection established');
+        tcp_client = client;
     });
 
-    tpc_client.on('data', function(data) {
+    client.on('data', function(data) {
         let msg = message.toString('utf8');
         console.log("TCP message received: " + msg);
         callback(JSON.parse(msg));
     });
 
-    tpc_client.on('close', function() {
+    client.on('close', function() {
         console.log("TCP connection closed");
-        tpc_client = undefined;
+        tcp_client = undefined;
     });
 }
 
-function sendJsonToMAV(data) {
-    if (tcp_client === undefined) return;
+function sendJSONToMAV(data) {
+    if (tcp_client === undefined) {
+        return;
+    }
     let buffer = Buffer.from(JSON.stringify(data));
     tcp_client.write(buffer);
 }
 
 module.exports = {
     establishConnection: establishConnection,
-    sendJsonToMAV: sendJsonToMAV
+    sendJSONToMAV: sendJSONToMAV
 }
