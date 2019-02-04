@@ -1,6 +1,8 @@
 const express = require("express")
 const fetch = require('node-fetch')
 let path = require('path')
+const fs = require('fs')
+const mkdirp = require('mkdirp')
 
 const sdgen = require('./src/sensor_data_generator') // sensor data generator
 const updc = require('./src/udp_connect')
@@ -30,6 +32,19 @@ let flightVars = {speedMag:0, speedX:0, speedY:0, speedZ:0, accelX:0, accelY:0, 
 
 let startDate = new Date();
 let startTime = startDate.getTime();
+
+// Initalize file for saving flight variable data
+const flightVarsFileName = `Flight_Variables_${startDate.getFullYear()}_${startDate.getMonth()}_${startDate.getDate()}_${startDate.getHours()}_${startDate.getMinutes()}_${startDate.getSeconds()}.csv`
+const flightVarsHeaders = `Time Stamp, Speed Magnitude, Speed X, Speed Y, Speed Z, Acceleration X, Acceleration Y, Acceleration Z, Pitch Change, Roll Change, Orientation Pitch, Orientation Roll, Height, Leds On, Speaker On\n`
+// Note: mkdirp is noop is folder already exists
+mkdirp(`./data`, (err) => {
+   if (err) throw err;
+	
+   fs.writeFile(`./data/${flightVarsFileName}`, flightVarsHeaders, (err) => {
+      if (err) throw err;
+      console.log(`Flight variable data file initialized`)
+   })
+})
 
 const app = express()
 
