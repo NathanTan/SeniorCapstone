@@ -12,29 +12,33 @@ import json
 SERVER_IP_FNAME = "server-ip-address"
 PORT = 57905 # This port is for video 2
 
-# Read in the IP address
-if not os.path.isfile(SERVER_IP_FNAME):
-    raise OSError("A file, '" + SERVER_IP_FNAME + "', does not exist.")
+# Modify this callback to return the data you need
+# @return Assumes this callback function returns a string
+def getData():
+    data = ""
+    time.sleep(0.1) # just for fun
+    return data
 
-f = open(SERVER_IP_FNAME, "r")
-server_ip = f.read()
-f.close()
+def main():
+    # Read in the IP address
+    if not os.path.isfile(SERVER_IP_FNAME):
+        raise OSError("A file, '" + SERVER_IP_FNAME + "', does not exist.")
 
-if len(server_ip) == 0:
-    raise TypeError("File does not have an IP address.")
+    f = open(SERVER_IP_FNAME, "r")
+    server_ip = f.read()
+    f.close()
 
-# Create a UDP socket
-sc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sc.bind(("", PORT))
+    if len(server_ip) == 0:
+        raise TypeError("File does not have an IP address.")
 
-while True:
-    # Do get data here
-    # ...
-    data = str(random.randint(0, 1000))
+    # Create a UDP socket
+    sc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sc.bind(("", PORT))
 
     # Send data
-    sc.sendto(data.encode("utf-8"), (server_ip, PORT))
-    time.sleep(0.1) # just for fun
+    while True:
+        sc.sendto(getData().encode("utf-8"), (server_ip, PORT))
+    sc.close()
 
-sc.close()
+main()
