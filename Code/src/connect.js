@@ -75,7 +75,7 @@ const TCP_PORT = 57800;
 
 let tcp_client = undefined;
 
-function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData) {
+function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData) {
     let sc1 = dgram.createSocket({ type: "udp4", reuseAddr: true });
 
     sc1.bind(MULTICAST_SEND_PORT);
@@ -110,17 +110,23 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
     sc2.on("message", function (message, remote) {
         if (Buffer.compare(message, RECEIVE_MESSAGE) == 0 && interval_id !== undefined) {
             console.log("Response received from " + remote.address + ":" + remote.port + " - " + message);
+
             // stop the ping
             clearInterval(interval_id);
             interval_id = undefined;
-            // close the socket
+
+            // close the sockets
             sc1.close();
             sc2.close();
+
             // setup sockets for each type of data
             initiateSensorDataReceiver(onReceiveSensorData, remote.address);
             //initiateVideo1Receiver(onReceiveVideo1, remote.address);
             //initiateVideo2Receiver(onReceiveVideo2, remote.address);
             //initiateTCPConnection(onReceiveImportantData, remote.address);
+
+            // trigger the IP found callback
+            onFoundRaspberryPi(ip);
         }
     });
 }

@@ -64,9 +64,16 @@ setInterval(function() {
 
 
 // Data Receivers
+
+// Called when we obtain the IP address of the Raspberry Pi
+function onFoundRaspberryPi(ip) {
+    // Inform client of the IP address for streaming video
+
+}
+
 function onReceiveSensorData(data) {
     merge_dictionaries(data, flightVars);
-	//console.log("Sensor: " + JSON.stringify(data));
+    //console.log("Sensor: " + JSON.stringify(data));
 }
 
 function onReceiveVideo1(data) {
@@ -81,6 +88,7 @@ function onReceiveVideo2(data) {
 function onReceiveImportantData(data) {
     console.log("Important data: " + data);
 }
+
 
 connector.establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData);
 

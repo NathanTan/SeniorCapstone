@@ -1,11 +1,31 @@
 # Senior Capstone
 A repository to host all of group 14's work towards the 2019 Vertical Flight Society's student Micro Air Vehicle competition.
 
+
 # CS Team
 Anton Synytsia<br/>
 Matthew Phillips<br/>
 Shanmukh Challa<br/>
 Nathan Tan<br/>
+
+
+# Setting Up Raspberry Pi
+1. Upload <tt>/Code/raspberry</tt> folder to your Raspberry Pi's home directory.
+
+2. Add execute permissions to all of the added files:
+```bash
+cd Code
+cd chmod -R 755 raspberry
+```
+
+3. Clone mjpg-streamer to <tt>/Code/raspberry</tt> folder:
+```bash
+cd Code/raspberry
+git clone git@github.com:jacksonliam/mjpg-streamer.git
+```
+
+4. Compile mjpg-streamer: https://github.com/jacksonliam/mjpg-streamer
+
 
 # Starting Server
 ```bash
@@ -14,28 +34,16 @@ npm i
 npm start
 ```
 
-# Setting Up Raspberry Pi
-1. Upload the <tt>/Code/raspberry</tt> folder into your Raspberry Pi's home directory.
-
-2. Add execute permissions to all files in raspberry directory:
-```bash
-cd Code/raspberry
-cd chmod -R 755 raspberry
-```
-
-3. Clone the following repository into your Raspberry Pi and follow instructions for
-   compiling: https://github.com/jacksonliam/mjpg-streamer
-
 
 # Starting Raspberry Pi
 
-Provided, both the raspberry pi and the server are in a common network, when starting a server, also run the following from the Raspberry Pi:
+Provided both, the Raspberry Pi and the server, are in a common network, when starting a server, also run the following from the Raspberry Pi:
 ```bash
 cd Code/raspberry/
 ./start_mav.sh
 ```
 
-After ending the server, run the following from the Raspberry Pi to kill all the spawned background processes:
+After ending the server, run the following from the Raspberry Pi to kill all the spawned processes:
 ```bash
 cd Code/raspberry/
 ./stop_mav.sh
