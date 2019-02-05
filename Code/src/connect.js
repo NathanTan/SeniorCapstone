@@ -71,7 +71,7 @@ const RECEIVE_SENSOR_DATA_PORT = 57903;
 const RECEIVE_VIDEO1_PORT = 57904;
 const RECEIVE_VIDEO2_PORT = 57905;
 
-const TCP_PORT = 1337;
+const TCP_PORT = 57800;
 
 let tcp_client = undefined;
 
@@ -86,12 +86,12 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
         sc1.setMulticastTTL(1);
         interval_id = setInterval(function() {
             if (interval_id === undefined) return;
-    
+
             sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, MULTICAST_ADDRESS, function(err) {
                 if (err) throw err;
             });
             console.log("Server multicasting to " + MULTICAST_ADDRESS + ":" + MULTICAST_SEND_PORT);
-    
+
         }, MULTICAST_INTERVAL);
     });
 
@@ -118,9 +118,9 @@ function establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVide
             sc2.close();
             // setup sockets for each type of data
             initiateSensorDataReceiver(onReceiveSensorData, remote.address);
-            initiateVideo1Receiver(onReceiveVideo1, remote.address);
-            initiateVideo2Receiver(onReceiveVideo2, remote.address);
-            initiateTCPConnection(onReceiveImportantData, remote.address);
+            //initiateVideo1Receiver(onReceiveVideo1, remote.address);
+            //initiateVideo2Receiver(onReceiveVideo2, remote.address);
+            //initiateTCPConnection(onReceiveImportantData, remote.address);
         }
     });
 }
@@ -168,11 +168,26 @@ function initiateVideo2Receiver(callback, ip) {
 }
 
 function initiateTCPConnection(callback, ip) {
-    let client = net.Socket();
-    client.connect(TCP_PORT, ip, function() {
+    let client = net.createConnection({
+        host: ip,
+        port: TCP_PORT
+    }, function() {
         console.log("TCP connection established");
+
+        console.log('---------client details -----------------');
+        var address = client.address();
+        var port = address.port;
+        var family = address.family;
+        var ipaddr = address.address;
+        console.log('Client is listening at port' + port);
+        console.log('Client ip :' + ipaddr);
+        console.log('Client is IP4/IP6 : ' + family);
+
         tcp_client = client;
     });
+
+    client.setTimeout(5000);
+    client.setEncoding('utf8');
 
     client.on("data", function(data) {
         let msg = message.toString("utf8");

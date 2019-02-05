@@ -14,20 +14,33 @@ npm i
 npm start
 ```
 
+# Setting Up Raspberry Pi
+1. Upload the <tt>/Code/raspberry</tt> folder into your Raspberry Pi's home directory.
+
+2. Add execute permissions to all files in raspberry directory:
+```bash
+cd Code/raspberry
+cd chmod -R 755 raspberry
+```
+
+3. Clone the following repository into your Raspberry Pi and follow instructions for
+   compiling: https://github.com/jacksonliam/mjpg-streamer
+
+
 # Starting Raspberry Pi
-Upload the <tt>/Code/raspberry</tt> folder into your Raspberry Pi's home directory.
 
 Provided, both the raspberry pi and the server are in a common network, when starting a server, also run the following from the Raspberry Pi:
 ```bash
-cd Code/raspberry
-python connect.py
+cd Code/raspberry/
+./start_mav.sh
 ```
 
 After ending the server, run the following from the Raspberry Pi to kill all the spawned background processes:
 ```bash
-cd Code/raspberry
-python kill_spawned.py
+cd Code/raspberry/
+./stop_mav.sh
 ```
+
 
 # LaTex Graphic Rules
 When uploading graphics to overleaf, upload them in PNG format (preferably transparent background). When uploading the TEX document to repository, convert all graphics to EPS format with an online converter, and then within the TEX file replace <tt>.png</tt> with <tt>.eps</tt>.
