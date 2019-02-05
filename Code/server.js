@@ -77,9 +77,23 @@ setInterval(function() {
 
 }, 10);
 
+const writeFlightVariableData = (flightVars, fileName) => {
+    let message = `${Date()}, ${flightVars.speedMag}, ${flightVars.speedX},` +
+                `${flightVars.speedY}, ${flightVars.speedZ}, ${flightVars.accelX}, ` +
+                `${flightVars.accelY}, ${flightVars.accelZ}, ${flightVars.pitchChange}, ` +
+                `${flightVars.rollChange}, ${flightVars.orientationPitch}, ${flightVars.orientationRoll}, ` +
+                `${flightVars.height}, ${flightVars.ledsON}, ${flightVars.speakerON}`
+    
+    fs.appendFile(fileName, message, err => {
+        if (err) throw err
+        console.log("Added to file")
+    })
+}
+
 
 // Data Receivers
 function onReceiveSensorData(data) {
+    writeFlightVariableData(data, flightVarsFileName)
     merge_dictionaries(data, flightVars);
 }
 
