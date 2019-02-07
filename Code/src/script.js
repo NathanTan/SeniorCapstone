@@ -32,20 +32,39 @@ function updateHTMLContent(data) {
   colWarRightSonar.style.fill = data.rightSonarColor;
 }
 
-setInterval(function () {
+function updateVideoSource(ip) {
+  document.getElementById("bottomFeed").src = "http://" + ip + ":8080/?action=stream";
+}
+
+let interval_id1 = setInterval(function () {
   fetch('/flightVars')
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (myJson) {
-      updateHTMLContent(myJson);
+    .then((response) => response.json())
+    .then((data) => {
+      updateHTMLContent(data)
 
       //Jan 23: test to make sure local flightVars object is updated correctly after fetch
-      flightVars = myJson;
-      //console.log(flightVars);
-      return myJson;
-    });
+      flightVars = data;
+    })
+    .catch(err => console.error(err));
+
 }, 10);
+
+
+// Call this fetch to update IP address
+let interval_id2 = setInterval(function () {
+  fetch('/raspberryIP')
+    .then((response) => response.text())
+    .then((ip) => {
+      console.log(ip);
+      if (ip === "") return;
+      updateVideoSource(ip);
+
+      // We only need to update source once.
+      clearInterval(interval_id2);
+      interval_id2 = undefined;
+    })
+    .catch(err => console.error(err));
+}, 500)
 
 //For switching between the depth map and bottom camera feed
 var switchBottomView = document.getElementsByClassName("BottomFeed");

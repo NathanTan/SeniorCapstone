@@ -126,7 +126,7 @@ function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveV
             //initiateTCPConnection(onReceiveImportantData, remote.address);
 
             // trigger the IP found callback
-            onFoundRaspberryPi(ip);
+            onFoundRaspberryPi(remote.address);
         }
     });
 }

@@ -110,7 +110,7 @@ def main():
     #processes.append(subprocess.Popen(["python", "video_transmitter2.py"]))
 
     # Save processes to file for termination
-    f = open(SPAWNED_PROCESSES_FNAME, "w+")
+    f = open(SPAWNED_PROCESSES_FNAME, "a")
     for proc in processes:
         f.write(str(proc.pid) + "\n")
     f.close()
