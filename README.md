@@ -28,14 +28,14 @@ Nathan Tan<br/>
 5. Setup rc.local boot-up script to run <tt>/home/pi/raspberry/start_mav.sh</tt>:
 
     A. Open <tt>/etc/rc.local</tt>:
-        ```bash
-        vim /etc/rc.local
-        ```
+    ```bash
+    vim /etc/rc.local
+    ```
 
     B. Add the following at the very end of the file, before the exit command:
-        ```bash
-        /home/pi/raspberry/start_mav.sh
-        ```
+    ```bash
+    /home/pi/raspberry/start_mav.sh
+    ```
 
 
 # Setting Up Server
