@@ -9,6 +9,7 @@
 *.bib text eol=lf filter=spabs
 *.md text eol=lf filter=spabs
 
+*.sh text eol=lf filter=spabs
 *.py text eol=lf filter=spabs
 *.rb text eol=lf filter=spabs
 *.js text eol=lf filter=spabs

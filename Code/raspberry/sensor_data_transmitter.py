@@ -16,9 +16,9 @@ PORT = 57903 # This port is for sensor feed
 # Modify this callback to return the data you need
 # @return Assumes this callback function returns a dictionary
 def getData():
+    time.sleep(0.02) # just for fun but also VERY important
     data = {}
     data["speed"] = random.randint(0, 1000)
-    #time.sleep(0.1) # just for fun
     return data
 
 

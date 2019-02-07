@@ -31,6 +31,8 @@ let flightVars = {speedMag:0, speedX:0, speedY:0, speedZ:0, accelX:0, accelY:0, 
 let startDate = new Date();
 let startTime = startDate.getTime();
 
+let raspberryIP = undefined
+
 const app = express()
 
 app.use(express.static(__dirname + '/public'))
@@ -41,8 +43,19 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'))
 })
 
+// Allows for informing the client of flight variables
 app.get('/flightVars', function(req, res) {
     res.send(JSON.stringify(flightVars));
+})
+
+// Allows for informing the client of Raspberry PI ip
+app.get('/raspberryIP', function(req, res) {
+    if (raspberryIP !== undefined) {
+        res.send(raspberryIP.toString());
+    }
+    else {
+        res.send("");
+    }
 })
 
 const port = process.env.PORT || 3000
@@ -64,9 +77,16 @@ setInterval(function() {
 
 
 // Data Receivers
+
+// Called when we obtain the IP address of the Raspberry Pi
+function onFoundRaspberryPi(ip) {
+    // Inform client of the IP address for streaming video
+    raspberryIP = ip;
+}
+
 function onReceiveSensorData(data) {
     merge_dictionaries(data, flightVars);
-	//console.log("Sensor: " + JSON.stringify(data));
+    //console.log("Sensor: " + JSON.stringify(data));
 }
 
 function onReceiveVideo1(data) {
@@ -82,7 +102,8 @@ function onReceiveImportantData(data) {
     console.log("Important data: " + data);
 }
 
-connector.establishConnection(onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData);
+
+connector.establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData);
 
 // Sending data to server via TCP
 //connector.sendJSONToMAV(data);

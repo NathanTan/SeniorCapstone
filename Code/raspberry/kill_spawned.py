@@ -11,7 +11,11 @@ with open(SPAWNED_PROCESSES_FNAME, 'r') as fp:
     while line:
         try:
             os.kill(int(line), signal.SIGTERM)
-        except:
+        except OSError as err:
+            if err.errno == 1:
+                print("Please run script as admin (sudo)")
+                raise
+            print("Killing process error: " + line + " - " + str(err))
             pass
         line = fp.readline()
 

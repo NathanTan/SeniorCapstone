@@ -22,7 +22,7 @@ SERVER_RESPONSE_TIMEOUT = 0.1 # in seconds
 SERVER_RESPONSE_PORT = 57902
 SERVER_RESPONSE_MESSAGE = "Beaver-Hawks2"
 
-TCP_PORT = 1337
+TCP_PORT = 57800
 
 # Do something with data here.
 def doOnTCPReceive(data):
@@ -85,11 +85,6 @@ def main():
     f.write(server_ip)
     f.close()
 
-    # Establish TCP connection for communicating important bits until the connection is terminated
-    sc3 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sc3.bind((server_ip, TCP_PORT))
-    sc3.listen(1)
-
     # Send a response to the server
     print("Sending response to " + str(server_ip) + ":" + str(SERVER_RESPONSE_PORT))
     sc2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -106,33 +101,47 @@ def main():
     # Close the socket
     sc2.close()
 
+    print("Launch subprocesses")
+
     # Start data transmission processies
     processes = []
     processes.append(subprocess.Popen(["python", "sensor_data_transmitter.py"]))
-    processes.append(subprocess.Popen(["python", "video_transmitter1.py"]))
-    processes.append(subprocess.Popen(["python", "video_transmitter2.py"]))
+    #processes.append(subprocess.Popen(["python", "video_transmitter1.py"]))
+    #processes.append(subprocess.Popen(["python", "video_transmitter2.py"]))
 
     # Save processes to file for termination
-    f = open(SPAWNED_PROCESSES_FNAME, "w+")
+    f = open(SPAWNED_PROCESSES_FNAME, "a")
     for proc in processes:
         f.write(str(proc.pid) + "\n")
     f.close()
 
-    # Assuming server received a response, we are now able to send data to the
-    # server's IP address.
-    conn, addr = sc3.accept()
-    while True:
-        try:
-            buf = conn.recv(1024)
-            try:
-                data = json.loads(buf.decode("utf-8"))
-                doOnTCPReceive(data)
-            except:
-                pass
-        except OSError:
-            break
+"""
+    # Establish TCP connection for communicating important bits until the connection is terminated
+    print("Start TCP connection")
+    sc3 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sc3.bind(("", TCP_PORT))
+        sc3.listen(1)
+        conn, addr = sc3.accept()
 
-    conn.close()
+        # Listen for data until connection terminates
+        while True:
+            try:
+                buf = conn.recv(1024)
+                try:
+                    data = json.loads(buf.decode("utf-8"))
+                    doOnTCPReceive(data)
+                except:
+                    pass
+            except OSError:
+                conn.close()
+                break
+
+    except OSError:
+        sc3.close()
+        raise
+
+    print("End TCP connection")
 
     # Kill spawned processes
     for proc in processes:
@@ -144,5 +153,7 @@ def main():
     # Delete the spawned processes file, since we already killed the processes at this point.
     if os.path.exists(SPAWNED_PROCESSES_FNAME):
         os.remove(SPAWNED_PROCESSES_FNAME)
+
+"""
 
 main()
