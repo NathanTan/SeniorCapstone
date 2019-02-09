@@ -93,38 +93,48 @@ To stop the server, trigger CONTROL-C in the console.
 
 
 # How Raspberry-Server Communication Works
-For the communication to work, both, the server the Raspberry Pi, need to be
-connected to a common, local network. A custom router with settings configured
+For the communication to work, both the server the Raspberry Pi need to be
+connected to a common, local network. A custom router, with settings configured
 to allow multicasting, is a perfect solution for a local network.
 
 When the server and RPi is turned on, there needs to be a way for the server
-and the RPi to become aware of each-others IP addresses.
+and the RPi to become aware of each-others IP addresses to establish direct
+communication.
 
-One way to establish connection is by updating host IP addresses manually,
-for both the server and the RPi code. This is not user-friendly, especially
-since the MAV is going to be operated from different networks.
+One way to establish connection is by hard-coding host IP addresses for both,
+the server and the RPi, code. This is not user-friendly, especially that the
+MAV is expected to be operated/tested from different networks. Additionally,
+we are not skiting to the same laptop and the same Raspberry Pi for performing
+the communication. So, the IPs will alter continuously. To resolve this, we
+developed a system for allowing the server to identify the IP address of the
+RPi and the RPi to identify the IP address of the server.
 
 To determine the IP addresses, the following protocol is established:
-1. Upon booting up, the RPi initiates a UDP multicast listener, for a
-   maximum of 60 seconds. The listener receives a multicast at a certain port,
-   known to both the server and the RPi.
+
+1. Upon booting up, the RPi initiates a UDP multicast listener for a maximum
+   duration of 60 seconds. The UDP socket receives a multicast at a certain
+   port, known to both, the server and the RPi.
 2. When the server is launched, the server multicasts a special message, to the
-   known port. The message is multicasted every 0.5 secods, until a response is
-   received from a RPi.
-3. The server also starts a listener for acquiring the response at a specific
-   port.
-4. Upon receiving a multicast message from the server, the RPi saves the IP
-   address of the server, stops the listener, and sends a response to the
-   server's IP address for a duration of 2 seconds, to ensure that the server
-   receives the message.
-5. Upon receiving the response, the server saves the IP address and initiates
-   video and sensor listeners.
-6. After echoing a response for 2 seconds, the RPi initiates three background
-   processes for transmitting video and sensor data to the MAV asynchronously.
-7. Following that, the RPi also establishes a TCP connection with the server for
-   receiving and transmitting the important bits. At the moment TCP, is
-   commented out because well, it seems like NodeJS net TCP is not compatible
-   with Python socket TCP.
+   known port. The message is multicasted every 0.5 seconds, until a response is
+   received from a RPi. The server also starts a listener for acquiring the
+   response at a specific port.
+3. Upon receiving a multicast message at the know port, the RPi saves the IP
+   address of the anticipated server, stops the listener, and sends a response
+   to the server's IP address, at a specific port, for a duration of 2 seconds,
+   well to ensure the server receives a message.
+4. Upon receiving a response from the RPi, the server saves the IP address of
+   the RPi and initiates asynchronous video and sensor listeners.
+5. After the RPi finishes echoing the response, the RPi initiates three
+   background processes for transmitting video and sensor data to the MAV
+   asynchronously.
+6. The RPi also establishes a TCP connection with the server for receiving and
+   transmitting the important bits. At the moment TCP, is commented out because
+   well, it seems like NodeJS net TCP is not compatible with Python socket TCP.
+
+This system requires that the router does not block WIFI multicast signals.
+Multicast signal is a form of broadcast signal. For obvious reasons, school's
+routers are very skeptical of broadcasts and block them. This means, we can only
+operate this from configured home network or a custom router.
 
 
 # LaTex Graphic Rules
