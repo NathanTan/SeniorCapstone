@@ -43,7 +43,7 @@ The following section describes the steps you have to perform on your Raspberry 
       sudo make install
       ```
 
-5. This step is optional. When your raspberry Pi boots up, you can have it run the script automatically.
+5. This step is optional. When your Raspberry Pi boots up, you can have it run the script automatically.
    This section describes how to setup rc.local boot script to run <tt>start_mav.sh</tt>:
    1. Open <tt>/etc/rc.local</tt>:
       ```bash
@@ -78,8 +78,9 @@ cd /Code/
 npm i
 ```
 
+
 # Starting Server
-To start the server, run the following commmands:
+To start the server, run the following commands:
 ```bash
 cd /Code/
 npm start
@@ -91,8 +92,44 @@ When started, the server can be viewed at the following URL:
 To stop the server, trigger CONTROL-C in the console.
 
 
+# How Raspberry-Server Communication Works
+For the communication to work, both, the server the Raspberry Pi, need to be
+connected to a common, local network. A custom router with settings configured
+to allow multicasting, is a perfect solution for a local network.
+
+When the server and RPi is turned on, there needs to be a way for the server
+and the RPi to become aware of each-others IP addresses.
+
+One way to establish connection is by updating host IP addresses manually,
+for both the server and the RPi code. This is not user-friendly, especially
+since the MAV is going to be operated from different networks.
+
+To determine the IP addresses, the following protocol is established:
+1. Upon booting up, the RPi initiates a UDP multicast listener, for a
+   maximum of 60 seconds. The listener receives a multicast at a certain port,
+   known to both the server and the RPi.
+2. When the server is launched, the server multicasts a special message, to the
+   known port. The message is multicasted every 0.5 secods, until a response is
+   received from a RPi.
+3. The server also starts a listener for acquiring the response at a specific
+   port.
+4. Upon receiving a multicast message from the server, the RPi saves the IP
+   address of the server, stops the listener, and sends a response to the
+   server's IP address for a duration of 2 seconds, to ensure that the server
+   receives the message.
+5. Upon receiving the response, the server saves the IP address and initiates
+   video and sensor listeners.
+6. After echoing a response for 2 seconds, the RPi initiates three background
+   processes for transmitting video and sensor data to the MAV asynchronously.
+7. Following that, the RPi also establishes a TCP connection with the server for
+   receiving and transmitting the important bits. At the moment TCP, is
+   commented out because well, it seems like NodeJS net TCP is not compatible
+   with Python socket TCP.
+
+
 # LaTex Graphic Rules
 When uploading graphics to overleaf, upload them in PNG format (preferably transparent background). When uploading the TEX document to repository, convert all graphics to EPS format with an online converter, and then within the TEX file replace <tt>.png</tt> with <tt>.eps</tt>.
+
 
 # Generating PDF Documents
 After uploading a <tt>TEX</tt> document, run the following commands:
