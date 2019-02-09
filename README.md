@@ -10,45 +10,50 @@ Nathan Tan<br/>
 
 
 # Setting Up Raspberry Pi
-1. Upload <tt>/Code/raspberry</tt> folder to your Raspberry Pi's home directory, so that the path looks like this: <tt>/home/pi/raspberry/</tt>
+The following section describes the steps you have to perform on your Raspberry Pi Raspbian kernel:
+
+1. Upload <tt>/Code/raspberry</tt> folder to your Raspberry Pi's home directory, so that the path is resembled in the following way:
+   <tt>/home/pi/raspberry/</tt>
 
 2. Add execute permissions to all of the added files:
-    ```bash
-    cd chmod -R 755 /home/pi/raspberry
-    ```
+   ```bash
+   chmod -R 755 /home/pi/raspberry
+   ```
 
-3. Clone mjpg-streamer to <tt>/home/pi/raspberry</tt> folder:
-    ```bash
-    cd /home/pi/raspberry
-    git clone git@github.com:jacksonliam/mjpg-streamer.git
-    ```
+3. Clone/download mjpg-streamer to <tt>/home/pi/raspberry</tt> folder:
+   ```bash
+   cd /home/pi/raspberry
+   git clone git@github.com:jacksonliam/mjpg-streamer.git
+   ```
+   If git is not available on your Raspbian, you can install it like this:
+   ```bash
+   sudo apt-get install git
+   ```
 
-4. Compile mjpg-streamer: https://github.com/jacksonliam/mjpg-streamer
+4. Compile mjpg-streamer (the actual steps were taken from https://github.com/jacksonliam/mjpg-streamer):
+   1. First install the required packages:
+      ```bash
+      sudo apt-get install cmake libjpeg8-dev
+      sudo apt-get install gcc g++
+      ```
+   2. Then compile:
+      ```bash
+      cd /home/pi/raspberry/mjpg-streamer/mjpg-streamer-experimental
+      make
+      sudo make install
+      ```
 
-5. Setup rc.local boot-up script to run <tt>/home/pi/raspberry/start_mav.sh</tt>:
+5. This step is optional. When your raspberry Pi boots up, you can have it run the script automatically.
+   This section describes how to setup rc.local boot script to run <tt>start_mav.sh</tt>:
+   1. Open <tt>/etc/rc.local</tt>:
+      ```bash
+      vim /etc/rc.local
+      ```
 
-    A. Open <tt>/etc/rc.local</tt>:
-    ```bash
-    vim /etc/rc.local
-    ```
-
-    B. Add the following at the very end of the file, before the exit command:
-    ```bash
-    /home/pi/raspberry/start_mav.sh
-    ```
-
-
-# Setting Up Server
-```bash
-cd /Code/
-npm i
-```
-
-# Starting Server
-```bash
-cd /Code/
-npm start
-```
+   2. Add the following at the very end of the file, before the exit command:
+      ```bash
+      /home/pi/raspberry/start_mav.sh
+      ```
 
 
 # Starting Raspberry Pi
@@ -64,6 +69,26 @@ After ending the server, run the following from the Raspberry Pi to kill all the
 ```bash
 /home/pi/raspberry/stop_mav.sh
 ```
+
+
+# Setting Up Server
+Provided that NodeJS is installed and the repository is cloned to your Laptop/PC, run the following:
+```bash
+cd /Code/
+npm i
+```
+
+# Starting Server
+To start the server, run the following commmands:
+```bash
+cd /Code/
+npm start
+```
+
+When started, the server can be viewed at the following URL:
+<tt>localhost:3000</tt>
+
+To stop the server, trigger CONTROL-C in the console.
 
 
 # LaTex Graphic Rules
