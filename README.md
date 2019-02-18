@@ -10,6 +10,28 @@ Nathan Tan<br/>
 
 
 # Setting Up Raspberry Pi
+
+There are two parts for setting up raspberry pi. The first part describes how to setup Raspbian and configure Wifi network. The second part describes how to setup our code on Raspbian.
+
+## Raspbian and Wifi Network
+1. Setup Raspbian Stretch Lite on your Raspberry Pi: https://www.raspberrypi.org/documentation/installation/installing-images/
+2. Connect Raspberry Pi to a Wifi network. Both the server and the Raspberry Pi will have to be connected to a common Wifi Network for this to work. There are two ways to setup Wifi network on your Raspbian:
+   a. Setup WIFI by editing SD card: https://howchoo.com/g/ndy1zte2yjn/how-to-set-up-wifi-on-your-raspberry-pi-without-ethernet
+   b. Setup WIFI by hooking keyboard and display to the Raspberry Pi and then modifying within the Raspbian kernel: https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
+3. To access Raspberry Pi, you can ssh into it with IP address or through an Ethernet cable: https://howchoo.com/g/ote0ywmzywj/how-to-enable-ssh-on-raspbian-without-a-screen
+   To connect via IP address, you can use nmap to search for Raspberry Pi in your network"
+   ```bash
+   nmap -sn 192.168.0.1/16 # 192.168.0.1 is LAN Wi-Fi default gateway (obtained by ifconfig or ipconfig)
+   ```
+   Provided that you have the ip address, you can then ssh with the following:
+   ```bash
+   ssh pi@192.168.0.120
+   ```
+   Note that you will first have to wait like 30 seconds after bootup before searching for IP or ssh-ing into Raspberry Pi.
+
+
+## Our Code
+
 The following section describes the steps you have to perform on your Raspberry Pi Raspbian kernel:
 
 1. Upload <tt>/Code/raspberry</tt> folder to your Raspberry Pi's home directory, so that the path is resembled in the following way:
@@ -47,12 +69,12 @@ The following section describes the steps you have to perform on your Raspberry 
    This section describes how to setup rc.local boot script to run <tt>start_mav.sh</tt>:
    1. Open <tt>/etc/rc.local</tt>:
       ```bash
-      vim /etc/rc.local
+      sudo vim /etc/rc.local
       ```
 
-   2. Add the following at the very end of the file, before the exit command:
+   2. Add the following at the very end of the file, before the <tt>exit 0</tt> command:
       ```bash
-      /home/pi/raspberry/start_mav.sh
+      sleep 5s && /home/pi/raspberry/start_mav.sh & # 5s delay is crucial to let pi to connect to wifi first
       ```
 
 
@@ -62,12 +84,12 @@ When you turn on Raspberry Pi, the boot up script should automatically run the <
 
 Provided both, the Raspberry Pi and the server, are in a common network, when starting a server, also run the following from the Raspberry Pi:
 ```bash
-/home/pi/raspberry/start_mav.sh
+sudo /home/pi/raspberry/start_mav.sh
 ```
 
 After ending the server, run the following from the Raspberry Pi to kill all the spawned processes:
 ```bash
-/home/pi/raspberry/stop_mav.sh
+sudo /home/pi/raspberry/stop_mav.sh
 ```
 
 
