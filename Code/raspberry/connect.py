@@ -42,7 +42,10 @@ def main():
 
     # Listen for multicast for at most MULTICAST_RECEIVE_DURATION seconds
     sc1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    if os.name == 'nt':
+        sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    else:
+        sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
 
     sc1.bind(("", MULTICAST_RECEIVE_PORT))
 
@@ -88,7 +91,10 @@ def main():
     # Send a response to the server
     print("Sending response to " + str(server_ip) + ":" + str(SERVER_RESPONSE_PORT))
     sc2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    sc2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    if os.name == 'nt':
+        sc2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    else:
+        sc2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
     sc2.bind(("", SERVER_RESPONSE_PORT))
     start_time = time.time()
     while True:

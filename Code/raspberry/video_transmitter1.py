@@ -33,7 +33,10 @@ def main():
 
     # Create a UDP socket
     sc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    if os.name == 'nt':
+        sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    else:
+        sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
     sc.bind(("", PORT))
 
     # Send data

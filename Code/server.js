@@ -67,7 +67,7 @@ app.listen(port, () => {
 setInterval(function() {
     let date = new Date();
     let t = (date.getTime() - startTime) * 0.01;
-    flightVars.height = Math.round(sdgen.getHeight(t));
+    //flightVars.height = Math.round(sdgen.getHeight(t));
 
     flightVars.frontSonarColor = sdgen.getFrontSonarColor(t);
     flightVars.leftSonarColor = sdgen.getLeftSonarColor(t);

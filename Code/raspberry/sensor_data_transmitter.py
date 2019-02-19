@@ -13,12 +13,17 @@ import sys
 SERVER_IP_FNAME = "server-ip-address"
 PORT = 57903 # This port is for sensor feed
 
+height = 0
+
 # Modify this callback to return the data you need
 # @return Assumes this callback function returns a dictionary
 def getData():
+    global height
     time.sleep(0.02) # just for fun but also VERY important
     data = {}
     data["speed"] = random.randint(0, 1000)
+    data["height"] = height
+    height += 1
     return data
 
 
@@ -36,7 +41,10 @@ def main():
 
     # Create a UDP socket
     sc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    if os.name == 'nt':
+        sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    else:
+        sc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
     sc.bind(("", PORT))
 
     # Send data
