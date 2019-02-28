@@ -124,14 +124,28 @@ for i in range(10):
     print(" ")
 
 
+titlAngle = 0;
+
+
 # Modify this callback to return the data you need
 # @return Assumes this callback function returns a dictionary
 def getData():
     global height
+	global titlAngle
     time.sleep(0.02) # just for fun but also VERY important
     data = {}
     data["speed"] = random.randint(0, 1000)
     data["height"] = height
+	
+	InitICM()
+    time.sleep(1)
+    gyro()
+    accel()
+	
+	titlAngle += gyro[0]
+	
+	data["tilltAntgle"] = titlAngle
+	
     height += 1
     # Get data here
     return data
