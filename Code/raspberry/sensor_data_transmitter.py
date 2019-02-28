@@ -60,10 +60,10 @@ def gyro():
     Gx = x/131.0 - GxCal
     Gy = y/131.0 - GyCal
     Gz = z/131.0 - GzCal
-    print ("Gx "),; print (Gx)
-    print ("Gy "),; print (Gy)
-    print ("Gz "),; print (Gz)
-    time.sleep(0.01)
+    #print ("Gx "),; print (Gx)
+    #print ("Gy "),; print (Gy)
+    #print ("Gz "),; print (Gz)
+    return [Gx, Gy, Gz]
 
 def accel():
     x = readICM(ACCEL_X)
@@ -72,10 +72,10 @@ def accel():
     Ax = x/16384.0 - AxCal
     Ay = y/16384.0 - AyCal
     Az = z/16384.0 - AzCal
-    print ("Ax "),; print (Ax)
-    print ("Ay "),; print (Ay)
-    print ("Az "),; print (Az)
-    time.sleep(0.01)
+    #print ("Ax "),; print (Ax)
+    #print ("Ay "),; print (Ay)
+    #print ("Az "),; print (Az)
+    return [Ax, Ay, Az]
 
 def calibrate():
     global AxCal
@@ -113,46 +113,40 @@ def calibrate():
     GzCal = z/131.0
 
 
-print("ICM20948")
-InitICM()
-calibrate()
-for i in range(10):
-    InitICM()
-    time.sleep(1)
-    gyro()
-    accel()
-    print(" ")
-
-
-titlAngle = 0;
+sideTiltAngle = 0;
 
 
 # Modify this callback to return the data you need
 # @return Assumes this callback function returns a dictionary
 def getData():
     global height
-	global titlAngle
+    global sideTiltAngle
     time.sleep(0.02) # just for fun but also VERY important
     data = {}
     data["speed"] = random.randint(0, 1000)
     data["height"] = height
-	
-	InitICM()
-    time.sleep(1)
+
+    # Cassie's code calls InitICM() each time before getting gyro and accelerometer data
+    # I also added this to main() function, see below.
+    InitICM()
     gyro()
     accel()
-	
-	titlAngle += gyro[0]
-	
-	data["tilltAntgle"] = titlAngle
-	
+
+    sideTiltAngle += gyro[0] # Update angle based on change (dont know if this is right)
+
+    data["sideTiltAngle"] = sideTiltAngle
+
+    # From the gyro and accelerometer, we need sideTiltAngle, forwardTileAngle, velocity vector [x, y, z]
+    # For the range sensors we need leftSonarRange, rightSonarRange, frontSonarRange, and bottomSonarRange
+
     height += 1
+
     # Get data here
     return data
 
 
 def main():
-    # Init sensors
+    # Init sensors and gyro
     InitICM()
     calibrate()
 
