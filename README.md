@@ -11,9 +11,10 @@ Nathan Tan<br/>
 
 # Setting Up Raspberry Pi
 
-There are two parts for setting up raspberry pi. The first part describes how to setup Raspbian and configure Wifi network. The second part describes how to setup our code on Raspbian.
+There are two parts for setting up the Raspberry Pi. The first part focuses on setting up Raspbian and configuring Wifi network on your Raspbian. The second part describes how to setup our code on Raspbian.
 
 ## Raspbian and Wifi Network
+
 1. Setup Raspbian Stretch Lite on your Raspberry Pi: https://www.raspberrypi.org/documentation/installation/installing-images/
 2. Connect Raspberry Pi to a Wifi network. Both the server and the Raspberry Pi will have to be connected to a common Wifi network for UDP communication to work. There are two ways to setup Wifi network on your Raspbian:
    * Setup WIFI by editing SD card: https://howchoo.com/g/ndy1zte2yjn/how-to-set-up-wifi-on-your-raspberry-pi-without-ethernet
@@ -30,7 +31,7 @@ There are two parts for setting up raspberry pi. The first part describes how to
    Note that you will first have to wait like 30 seconds after bootup before searching for IP or ssh-ing into Raspberry Pi.
 
 
-## Our Code
+## Setting Up Code
 
 The following section describes the steps you have to perform on your Raspberry Pi Raspbian kernel:
 
