@@ -12,7 +12,7 @@ SERVER_IP_FNAME = "server-ip-address"
 SPAWNED_PROCESSES_FNAME = "spawned-processes"
 
 # https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
-MULTICAST_ADDRESS = "239.192.0.1"
+MULTICAST_ADDRESS = "239.0.0.7"
 MAX_MULTICAST_RECEIVE_DURATION = 60 # in seconds
 MULTICAST_RECEIVE_PORT = 57901
 MULTICAST_RECEIVE_MESSAGE = "Beaver-Hawks1"
@@ -23,6 +23,8 @@ SERVER_RESPONSE_PORT = 57902
 SERVER_RESPONSE_MESSAGE = "Beaver-Hawks2"
 
 TCP_PORT = 57800
+
+USE_MULTICAST = False # Set to true to use multicast over broadcast (must also reflect that in connect.js)
 
 # Do something with data here.
 def doOnTCPReceive(data):
@@ -40,22 +42,38 @@ def main():
     if os.path.exists(SERVER_IP_FNAME):
         os.remove(SERVER_IP_FNAME)
 
-    # Listen for multicast for at most MULTICAST_RECEIVE_DURATION seconds
-    sc1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    if os.name == 'nt':
-        sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    if USE_MULTICAST:
+        # Listen for multicast for at most MAX_MULTICAST_RECEIVE_DURATION seconds
+        sc1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        if os.name == 'nt':
+            sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        else:
+            sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+
+        group = socket.inet_aton(MULTICAST_ADDRESS)
+        mreq = struct.pack("4sl", group, socket.INADDR_ANY)
+        sc1.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+
+        sc1.bind(("", MULTICAST_RECEIVE_PORT))
+
+        sc1.settimeout(1.0)
+
+        print("Listening for data at " + MULTICAST_ADDRESS + ":" + str(MULTICAST_RECEIVE_PORT))
+
     else:
-        sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        # Listen for broadcast for at most MAX_MULTICAST_RECEIVE_DURATION seconds
+        sc1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        if os.name == 'nt':
+            sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        else:
+            sc1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        sc1.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        sc1.bind(("", MULTICAST_RECEIVE_PORT))
+        sc1.settimeout(1.0)
 
-    sc1.bind(("", MULTICAST_RECEIVE_PORT))
+        print("Listening for broadcast data at " + str(MULTICAST_RECEIVE_PORT) + " port.")
 
-    group = socket.inet_aton(MULTICAST_ADDRESS)
-    mreq = struct.pack("4sl", group, socket.INADDR_ANY)
-    sc1.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
-    sc1.settimeout(1.0)
-
-    print("Listening for data at " + MULTICAST_ADDRESS + ":" + str(MULTICAST_RECEIVE_PORT))
     server_ip = None
     start_time = time.time()
     while True:

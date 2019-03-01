@@ -62,7 +62,8 @@ Object.keys(ifaces).forEach(function (ifname) {
 const MULTICAST_SEND_PORT = 57901;
 const RESPONSE_RECEIVE_PORT = 57902;
 // https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
-const MULTICAST_ADDRESS = "239.192.0.1";
+const MULTICAST_ADDRESS = "239.0.0.7";
+const BROADCAST_ADDRESS = "192.168.1.255";
 const MULTICAST_SEND_MESSAGE = Buffer.from("Beaver-Hawks1");
 const RECEIVE_MESSAGE = Buffer.from("Beaver-Hawks2");
 const MULTICAST_INTERVAL = 500; // in ms
@@ -73,32 +74,54 @@ const RECEIVE_VIDEO2_PORT = 57905;
 
 const TCP_PORT = 57800;
 
+const USE_MULTICAST = false; // Set to true to use multicast over broadcast (must also reflect that in connect.py)
+
 let tcp_client = undefined;
 
 function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData) {
     let sc1 = dgram.createSocket({ type: "udp4", reuseAddr: true });
 
-    sc1.bind(MULTICAST_SEND_PORT);
+    if (USE_MULTICAST) {
+        // Multicast our message to all the IP addresses at the local network until we obtain a response
+        sc1.on("listening", function() {
+            sc1.addMembership(MULTICAST_ADDRESS);
+            sc1.setMulticastTTL(5);
+            interval_id = setInterval(function() {
+                if (interval_id === undefined) return;
 
-    // Multicast our message to all the IP addresses at the local network until we obtain a response
-    sc1.on("listening", function() {
-        sc1.addMembership(MULTICAST_ADDRESS);
-        sc1.setMulticastTTL(1);
-        interval_id = setInterval(function() {
-            if (interval_id === undefined) return;
+                sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, MULTICAST_ADDRESS, function(err) {
+                    if (err) throw err;
+                });
+                console.log("Server multicasting to " + MULTICAST_ADDRESS + ":" + MULTICAST_SEND_PORT);
 
-            sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, MULTICAST_ADDRESS, function(err) {
-                if (err) throw err;
-            });
-            console.log("Server multicasting to " + MULTICAST_ADDRESS + ":" + MULTICAST_SEND_PORT);
+            }, MULTICAST_INTERVAL);
+        });
 
-        }, MULTICAST_INTERVAL);
-    });
+        sc1.bind(MULTICAST_SEND_PORT);
+    }
+    else {
+        // Broadcast our message to all the IP addresses at the local network until we obtain a response
+        sc1.on("listening", function() {
+            interval_id = setInterval(function() {
+                if (interval_id === undefined) return;
+
+                sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, BROADCAST_ADDRESS, function(err) {
+                    if (err) throw err;
+                });
+                console.log('Server broadcasting to ' + BROADCAST_ADDRESS + ':' + MULTICAST_SEND_PORT);
+
+            }, MULTICAST_INTERVAL);
+        });
+
+        sc1.bind(MULTICAST_SEND_PORT, function () {
+            sc1.setBroadcast(true);
+        });
+    }
 
     // Setup a listener
     let sc2 = dgram.createSocket({ type: "udp4", reuseAddr: true })
 
-    // Listen for messages comming all interfaces of this device, at RESPONSE_RECEIVE_PORT
+    // Listen for messages coming all interfaces of this device, at RESPONSE_RECEIVE_PORT
     sc2.bind(RESPONSE_RECEIVE_PORT);
 
     sc2.on("listening", function () {

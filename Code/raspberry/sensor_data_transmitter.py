@@ -15,6 +15,7 @@ PORT = 57903 # This port is for sensor feed
 
 height = 0
 
+"""
 import smbus
 import time
 
@@ -87,7 +88,7 @@ def calibrate():
     for i in range(50):
         x = x + readICM(ACCEL_X)
         y = y + readICM(ACCEL_Y)
-            z = z + readICM(ACCEL_Z)
+        z = z + readICM(ACCEL_Z)
     x = x/50
     y = y/50
     z = z/50
@@ -114,7 +115,7 @@ def calibrate():
 
 
 sideTiltAngle = 0;
-
+"""
 
 # Modify this callback to return the data you need
 # @return Assumes this callback function returns a dictionary
@@ -128,6 +129,7 @@ def getData():
 
     # Cassie's code calls InitICM() each time before getting gyro and accelerometer data
     # I also added this to main() function, see below.
+    """
     InitICM()
     gyro()
     accel()
@@ -135,6 +137,7 @@ def getData():
     sideTiltAngle += gyro[0] # Update angle based on change (dont know if this is right)
 
     data["sideTiltAngle"] = sideTiltAngle
+    """
 
     # From the gyro and accelerometer, we need sideTiltAngle, forwardTileAngle, velocity vector [x, y, z]
     # For the range sensors we need leftSonarRange, rightSonarRange, frontSonarRange, and bottomSonarRange
@@ -146,9 +149,11 @@ def getData():
 
 
 def main():
+    """
     # Init sensors and gyro
     InitICM()
     calibrate()
+    """
 
     # Read in the IP address
     if not os.path.isfile(SERVER_IP_FNAME):
