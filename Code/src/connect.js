@@ -32,16 +32,17 @@ https://www.hacksparrow.com/node-js-udp-server-and-client-example.html
 
 */
 
-var dgram = require("dgram"); // udp
-var net = require("net"); // tcp
-var os = require("os");
-var ip_util = require("ip");
+let dgram = require("dgram"); // udp
+let net = require("net"); // tcp
+let os = require("os");
+let ip_util = require("ip");
 
 
 const MULTICAST_SEND_PORT = 57901;
 const RESPONSE_RECEIVE_PORT = 57902;
 // https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
 const MULTICAST_ADDRESS = "239.0.0.7";
+const DEFAULT_BROADCAST_ADDRESS = "255.255.255.255";
 const MULTICAST_SEND_MESSAGE = Buffer.from("Beaver-Hawks1");
 const RECEIVE_MESSAGE = Buffer.from("Beaver-Hawks2");
 const MULTICAST_INTERVAL = 500; // in ms
@@ -60,20 +61,36 @@ let tcp_client = undefined;
 // A broadcast of "255.255.255.255" does not work on ASUS router.
 // We must use the router's subnet broadcast address.
 function getBroadcastAddress() {
-    // source for getting IP: https://stackoverflow.com/a/10756441
-    var interfaces = os.networkInterfaces();
-    for (var k in interfaces) {
-        for (var k2 in interfaces[k]) {
-            var address = interfaces[k][k2];
+    let iface = null;
+    let ibr = null;
+    // source for iterating interfaces: https://stackoverflow.com/a/10756441
+    let interfaces = os.networkInterfaces();
+    for (let k in interfaces) {
+        for (let k2 in interfaces[k]) {
+            let address = interfaces[k][k2];
             if (address.family === 'IPv4' && !address.internal) {
                 // having the IP, we now use subnet masking to get the broadcast address
-                return ip_util.cidrSubnet(address.cidr).broadcastAddress;
+                let br = ip_util.cidrSubnet(address.cidr).broadcastAddress;
+                // Prioritize Wi-Fi interface, over Ethernet, over anything else.
+                if (k.match(/wi-fi|wifi/gi)) {
+                    iface = 0;
+                    ibr = br;
+                }
+                else if (k.match(/ethernet/gi)) {
+                    if (iface === null || iface > 1) {
+                        iface = 1;
+                        ibr = br;
+                    }
+                }
+                else if (iface === null) {
+                    iface = 2;
+                    ibr = br;
+                }
             }
         }
     }
-    return null;
+    return ibr;
 }
-
 
 function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData) {
     let sc1 = dgram.createSocket({ type: "udp4", reuseAddr: true });
@@ -99,8 +116,8 @@ function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveV
     else {
         let broadcast_addr = getBroadcastAddress();
         if (broadcast_addr == null) {
-            console.log("Could not find subnet broadcast address; broadcasting to 255.255.255.255 instead.");
-            broadcast_addr = '255.255.255.255';
+            broadcast_addr = DEFAULT_BROADCAST_ADDRESS;
+            console.log("Could not find subnet broadcast address; broadcasting to " + DEFAULT_BROADCAST_ADDRESS + " instead.");
         }
 
         // Broadcast our message to all the IP addresses at the local network until we obtain a response
