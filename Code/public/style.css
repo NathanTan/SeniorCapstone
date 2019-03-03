@@ -88,7 +88,14 @@
 
 #bottomFeed {
   -webkit-user-select: none;
-  cursor: zoom-out;
+  cursor: select;
+  width: 100%;
+  height: 100%;
+}
+
+#frontFeed {
+  -webkit-user-select: none;
+  cursor: select;
   width: 100%;
   height: 100%;
 }
