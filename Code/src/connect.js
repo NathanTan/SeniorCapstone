@@ -34,36 +34,14 @@ https://www.hacksparrow.com/node-js-udp-server-and-client-example.html
 
 var dgram = require("dgram"); // udp
 var net = require("net"); // tcp
-
 var os = require("os");
+var ip_util = require("ip");
 
-/*var ifaces = os.networkInterfaces();
-
-Object.keys(ifaces).forEach(function (ifname) {
-  var alias = 0;
-
-  ifaces[ifname].forEach(function (iface) {
-    if ("IPv4" !== iface.family || iface.internal !== false) {
-      // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-      return;
-    }
-
-    if (alias >= 1) {
-      // this single interface has multiple ipv4 addresses
-      console.log(ifname + ":" + alias, iface.address);
-    } else {
-      // this interface has only one ipv4 adress
-      console.log(ifname, iface.address);
-    }
-    ++alias;
-  });
-});*/
 
 const MULTICAST_SEND_PORT = 57901;
 const RESPONSE_RECEIVE_PORT = 57902;
 // https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
 const MULTICAST_ADDRESS = "239.0.0.7";
-const BROADCAST_ADDRESS = "192.168.1.255";
 const MULTICAST_SEND_MESSAGE = Buffer.from("Beaver-Hawks1");
 const RECEIVE_MESSAGE = Buffer.from("Beaver-Hawks2");
 const MULTICAST_INTERVAL = 500; // in ms
@@ -74,9 +52,28 @@ const RECEIVE_VIDEO2_PORT = 57905;
 
 const TCP_PORT = 57800;
 
-const USE_MULTICAST = false; // Set to true to use multicast over broadcast (must also reflect that in connect.py)
+// Set to true to use multicast over broadcast (must also reflect that in connect.py)
+const USE_MULTICAST = false;
 
 let tcp_client = undefined;
+
+// A broadcast of "255.255.255.255" does not work on ASUS router.
+// We must use the router's subnet broadcast address.
+function getBroadcastAddress() {
+    // source for getting IP: https://stackoverflow.com/a/10756441
+    var interfaces = os.networkInterfaces();
+    for (var k in interfaces) {
+        for (var k2 in interfaces[k]) {
+            var address = interfaces[k][k2];
+            if (address.family === 'IPv4' && !address.internal) {
+                // having the IP, we now use subnet masking to get the broadcast address
+                return ip_util.cidrSubnet(address.cidr).broadcastAddress;
+            }
+        }
+    }
+    return null;
+}
+
 
 function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveVideo1, onReceiveVideo2, onReceiveImportantData) {
     let sc1 = dgram.createSocket({ type: "udp4", reuseAddr: true });
@@ -100,15 +97,21 @@ function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveV
         sc1.bind(MULTICAST_SEND_PORT);
     }
     else {
+        let broadcast_addr = getBroadcastAddress();
+        if (broadcast_addr == null) {
+            console.log("Could not find subnet broadcast address; broadcasting to 255.255.255.255 instead.");
+            broadcast_addr = '255.255.255.255';
+        }
+
         // Broadcast our message to all the IP addresses at the local network until we obtain a response
         sc1.on("listening", function() {
             interval_id = setInterval(function() {
                 if (interval_id === undefined) return;
 
-                sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, BROADCAST_ADDRESS, function(err) {
+                sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, broadcast_addr, function(err) {
                     if (err) throw err;
                 });
-                console.log('Server broadcasting to ' + BROADCAST_ADDRESS + ':' + MULTICAST_SEND_PORT);
+                console.log('Server broadcasting to ' + broadcast_addr + ':' + MULTICAST_SEND_PORT);
 
             }, MULTICAST_INTERVAL);
         });

@@ -1,6 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+*.json text eol=lf filter=spabs
 *.conf text eol=lf filter=spabs
 *.txt text eol=lf filter=spabs
 *.h text eol=lf filter=spabs
