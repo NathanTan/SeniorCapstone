@@ -34,6 +34,7 @@ function updateHTMLContent(data) {
 
 function updateVideoSource(ip) {
   document.getElementById("bottomFeed").src = "http://" + ip + ":8080/?action=stream";
+  document.getElementById("frontFeed").src = "http://" + ip + ":8081/?action=stream";
 }
 
 let interval_id1 = setInterval(function () {
