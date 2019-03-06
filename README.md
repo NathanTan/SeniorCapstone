@@ -46,7 +46,7 @@ The following section describes the steps you have to perform on your Raspberry 
 3. Clone/download mjpg-streamer to <tt>/home/pi/raspberry</tt> folder:
    ```bash
    cd /home/pi/raspberry
-   git clone git@github.com:jacksonliam/mjpg-streamer.git
+   sudo git clone https://github.com/jacksonliam/mjpg-streamer.git
    ```
    If git is not available on your Raspbian, you can install it like this:
    ```bash
@@ -56,6 +56,7 @@ The following section describes the steps you have to perform on your Raspberry 
 4. Compile mjpg-streamer (the actual steps were taken from https://github.com/jacksonliam/mjpg-streamer):
    1. First install the required packages:
       ```bash
+      sudo apt-get update # This is recommended!
       sudo apt-get install cmake libjpeg8-dev
       sudo apt-get install gcc g++
       ```
@@ -68,14 +69,19 @@ The following section describes the steps you have to perform on your Raspberry 
 
 5. This step is optional. When your Raspberry Pi boots up, you can have it run the script automatically.
    This section describes how to setup rc.local boot script to run <tt>start_mav.sh</tt>:
-   1. Open <tt>/etc/rc.local</tt>:
+   1. Optional: install vim:
+      ```bash
+      sudo apt-get install vim
+      ```
+
+   2. Open <tt>/etc/rc.local</tt>:
       ```bash
       sudo vim /etc/rc.local
       ```
 
-   2. Add the following at the very end of the file, before the <tt>exit 0</tt> command:
+   3. Add the following at the very end of the file, before the <tt>exit 0</tt> command:
       ```bash
-      sleep 5s && /home/pi/raspberry/start_mav.sh & # 5s delay is crucial to let pi to connect to wifi first
+      sleep 1s && /home/pi/raspberry/start_mav.sh & # 1s delay is crucial to let pi to connect to wifi first
       ```
 
 
