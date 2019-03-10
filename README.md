@@ -17,7 +17,7 @@ There are two parts for setting up the Raspberry Pi. The first part focuses on s
 
 1. Setup Raspbian Stretch Lite on your Raspberry Pi: https://www.raspberrypi.org/documentation/installation/installing-images/
 
-2. Inject SD card an add the following at the end of <tt>/boot/config.txt</tt>:
+2. Inject SD card and add the following at the end of <tt>/boot/config.txt</tt>:
    ```bash
    enable_uart=1
    dtoverlay=pi3-disable-bt
@@ -28,17 +28,18 @@ There are two parts for setting up the Raspberry Pi. The first part focuses on s
    * Setup WIFI by editing SD card: https://howchoo.com/g/ndy1zte2yjn/how-to-set-up-wifi-on-your-raspberry-pi-without-ethernet
    * Setup WIFI by hooking keyboard and display to the Raspberry Pi and then modifying within the Raspbian kernel: https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
 
-   If you want to connect to our BeaversMAV network, inject the SD card, and paste <tt>wpa_supplicant.conf</tt> file (attached with this repository) to the boot folder. Then eject and load the Raspberry Pi.
+   If you want to connect to our BeaversMAV network, inject the SD card, and paste <tt>wpa_supplicant.conf</tt> file (attached with this repository) to the boot folder. Then, eject and load the Raspberry Pi.
 
-4. To access Raspberry Pi, you can ssh into it with IP address or through an Ethernet cable: https://howchoo.com/g/ote0ywmzywj/how-to-enable-ssh-on-raspbian-without-a-screen
-   To connect via IP address, you can use nmap to search for Raspberry Pi in your network"
+4. To access Raspberry Pi, you can ssh into it with IP address. You can use nmap to search for Raspberry Pi in your network:
    ```bash
    nmap -sn 192.168.0.1/16 # 192.168.0.1 is LAN Wi-Fi default gateway (obtained by ifconfig or ipconfig)
    ```
-   Provided that you have the ip address, you can then ssh with the following:
+
+   Provided that you have the IP address, you can then ssh with an alike command:
    ```bash
    ssh pi@192.168.0.120
    ```
+
    Note that you will first have to wait like 30 seconds after bootup before searching for IP or ssh-ing into Raspberry Pi.
 
 
