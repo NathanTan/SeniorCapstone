@@ -16,10 +16,21 @@ There are two parts for setting up the Raspberry Pi. The first part focuses on s
 ## Raspbian and Wifi Network
 
 1. Setup Raspbian Stretch Lite on your Raspberry Pi: https://www.raspberrypi.org/documentation/installation/installing-images/
-2. Connect Raspberry Pi to a Wifi network. Both the server and the Raspberry Pi will have to be connected to a common Wifi network for UDP communication to work. There are two ways to setup Wifi network on your Raspbian:
+
+2. Inject SD card an add the following at the end of <tt>/boot/config.txt</tt>:
+   ```bash
+   enable_uart=1
+   dtoverlay=pi3-disable-bt
+   dtoverlay=pi3-miniuart-bt
+   ```
+
+3. Connect Raspberry Pi to a Wifi network. Both the server and the Raspberry Pi will have to be connected to a common Wifi network for UDP communication to work. There are two ways to setup Wifi network on your Raspbian:
    * Setup WIFI by editing SD card: https://howchoo.com/g/ndy1zte2yjn/how-to-set-up-wifi-on-your-raspberry-pi-without-ethernet
    * Setup WIFI by hooking keyboard and display to the Raspberry Pi and then modifying within the Raspbian kernel: https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
-3. To access Raspberry Pi, you can ssh into it with IP address or through an Ethernet cable: https://howchoo.com/g/ote0ywmzywj/how-to-enable-ssh-on-raspbian-without-a-screen
+
+   If you want to connect to our BeaversMAV network, inject the SD card, and paste <tt>wpa_supplicant.conf</tt> file (attached with this repository) to the boot folder. Then eject and load the Raspberry Pi.
+
+4. To access Raspberry Pi, you can ssh into it with IP address or through an Ethernet cable: https://howchoo.com/g/ote0ywmzywj/how-to-enable-ssh-on-raspbian-without-a-screen
    To connect via IP address, you can use nmap to search for Raspberry Pi in your network"
    ```bash
    nmap -sn 192.168.0.1/16 # 192.168.0.1 is LAN Wi-Fi default gateway (obtained by ifconfig or ipconfig)
@@ -33,7 +44,7 @@ There are two parts for setting up the Raspberry Pi. The first part focuses on s
 
 ## Setting Up Code
 
-The following section describes the steps you have to perform on your Raspberry Pi Raspbian kernel:
+The following section describes the steps you have to perform on your Raspberry Pi Raspbian terminal:
 
 1. Upload <tt>/Code/raspberry</tt> folder to your Raspberry Pi's home directory, so that the path is resembled in the following way:
    <tt>/home/pi/raspberry/</tt>
@@ -66,8 +77,24 @@ The following section describes the steps you have to perform on your Raspberry 
       make
       sudo make install
       ```
+5.  Install <tt>pyserial</tt> libraries for python:
+    1. First, install <tt>pip</tt>:
+       ```bash
+       sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+       sudo python get-pip.py
+       ```
 
-5. This step is optional. When your Raspberry Pi boots up, you can have it run the script automatically.
+       (Optional) If you already have pip installed, you can update it like this:
+       ```bash
+       sudo python -m pip install -U pip # This is
+       ```
+
+    2. Install <tt>pyserial</tt>:
+       ```bash
+       sudo python -m pip install pyserial
+       ```
+
+6. This step is optional. When your Raspberry Pi boots up, you can have it run the script automatically.
    This section describes how to setup rc.local boot script to run <tt>start_mav.sh</tt>:
    1. Optional: install vim:
       ```bash

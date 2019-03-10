@@ -1,8 +1,8 @@
 from time import time
 from serial import Serial
 
-serialDevice = "/dev/ttyAMA0"
-maxwait = 3
+serialDevice = "/dev/ttyAMA0" # default for RaspberryPi
+maxwait = 3 # seconds to try for a good reading before quitting
 
 def measure(portName):
     ser = Serial(portName, 9600, 8, 'N', 1, timeout=1)
@@ -34,7 +34,3 @@ def measure(portName):
 
     ser.close()
     raise RuntimeError("Expected serial data not received")
-
-if __name__ == '__main__':
-    measurement = measure(serialDevice)
-    print("distance =",measurement)
