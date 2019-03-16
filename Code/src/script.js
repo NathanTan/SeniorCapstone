@@ -21,7 +21,7 @@ function updateHTMLContent(data) {
   }
 
   if (data.speed !== undefined) {
-    document.getElementById("speed").innerHTML = data.speed.toString();
+    document.getElementById("speed").innerHTML = "--"; //data.speed.toString();
   }
   else {
     document.getElementById("speed").innerHTML = "NONE";

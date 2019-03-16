@@ -14,19 +14,17 @@ import maxSonarTTY
 SERVER_IP_FNAME = "server-ip-address"
 PORT = 57903 # This port is for sensor feed
 
-ULTRASONIC_DEVICE = "/dev/ttyAMA0"
+ULTRASONIC_DEVICE1 = "/dev/ttyAMA0"
 
 # Modify this callback to return the data you need
 # @return Assumes this callback function returns a dictionary
 def getData():
-    global height
-    global sideTiltAngle
     time.sleep(0.02) # just for fun but also VERY important
     data = {}
     data["speed"] = random.randint(0, 1000)
 
     try:
-        data["height"] = maxSonarTTY.measure(ULTRASONIC_DEVICE)
+        data["height"] = maxSonarTTY.measure(ULTRASONIC_DEVICE1)
     except Exception as err:
         #print("Error: {0}".format(err))
         data["height"] = -1
