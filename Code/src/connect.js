@@ -97,13 +97,13 @@ function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveV
 
     if (USE_MULTICAST) {
         // Multicast our message to all the IP addresses at the local network until we obtain a response
-        sc1.on("listening", function() {
+        sc1.on("listening", function () {
             sc1.addMembership(MULTICAST_ADDRESS);
             sc1.setMulticastTTL(5);
-            interval_id = setInterval(function() {
+            interval_id = setInterval(function () {
                 if (interval_id === undefined) return;
 
-                sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, MULTICAST_ADDRESS, function(err) {
+                sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, MULTICAST_ADDRESS, function (err) {
                     if (err) throw err;
                 });
                 console.log("Server multicasting to " + MULTICAST_ADDRESS + ":" + MULTICAST_SEND_PORT);
@@ -121,11 +121,11 @@ function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveV
         }
 
         // Broadcast our message to all the IP addresses at the local network until we obtain a response
-        sc1.on("listening", function() {
-            interval_id = setInterval(function() {
+        sc1.on("listening", function () {
+            interval_id = setInterval(function () {
                 if (interval_id === undefined) return;
 
-                sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, broadcast_addr, function(err) {
+                sc1.send(MULTICAST_SEND_MESSAGE, 0, MULTICAST_SEND_MESSAGE.length, MULTICAST_SEND_PORT, broadcast_addr, function (err) {
                     if (err) throw err;
                 });
                 console.log('Server broadcasting to ' + broadcast_addr + ':' + MULTICAST_SEND_PORT);
@@ -220,7 +220,7 @@ function initiateTCPConnection(callback, ip) {
     let client = net.createConnection({
         host: ip,
         port: TCP_PORT
-    }, function() {
+    }, function () {
         console.log("TCP connection established");
 
         console.log('---------client details -----------------');
@@ -238,13 +238,13 @@ function initiateTCPConnection(callback, ip) {
     client.setTimeout(5000);
     client.setEncoding('utf8');
 
-    client.on("data", function(data) {
+    client.on("data", function (data) {
         let msg = message.toString("utf8");
         console.log("TCP message received: " + msg);
         callback(JSON.parse(msg));
     });
 
-    client.on("close", function() {
+    client.on("close", function () {
         console.log("TCP connection closed");
         tcp_client = undefined;
     });

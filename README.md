@@ -87,7 +87,7 @@ The following section describes the steps you have to perform on your Raspberry 
 
        (Optional) If you already have pip installed, you can update it like this:
        ```bash
-       sudo python -m pip install -U pip # This is
+       sudo python -m pip install -U pip
        ```
 
     2. Install <tt>pyserial</tt>:
@@ -109,7 +109,7 @@ The following section describes the steps you have to perform on your Raspberry 
 
    3. Add the following at the very end of the file, before the <tt>exit 0</tt> command:
       ```bash
-      sleep 1s && /home/pi/raspberry/start_mav.sh & # 1s delay is crucial to let pi to connect to wifi first
+      sleep 3s && /home/pi/raspberry/start_mav.sh & # 3s delay is crucial to let pi to connect to wifi first
       ```
 
 

@@ -64,7 +64,7 @@ app.listen(port, () => {
     console.log(`Listening on port ${port}`)
 })
 
-setInterval(function() {
+/*setInterval(function() {
     let date = new Date();
     let t = (date.getTime() - startTime) * 0.01;
     //flightVars.height = Math.round(sdgen.getHeight(t));
@@ -73,7 +73,7 @@ setInterval(function() {
     flightVars.leftSonarColor = sdgen.getLeftSonarColor(t);
     flightVars.rightSonarColor = sdgen.getRightSonarColor(t);
 
-}, 10);
+}, 10);*/
 
 
 // Data Receivers
@@ -87,6 +87,22 @@ function onFoundRaspberryPi(ip) {
 function onReceiveSensorData(data) {
     merge_dictionaries(data, flightVars);
     //console.log("Sensor: " + JSON.stringify(data));
+
+    if (typeof(flightVars.bottomSonarRange) === "number") {
+        flightVars.bottomSonarColor = sdgen.convertSonarRangeToCSSColor(flightVars.bottomSonarRange);
+    }
+
+    if (typeof(flightVars.frontSonarRange) === "number") {
+        flightVars.frontSonarColor = sdgen.convertSonarRangeToCSSColor(flightVars.frontSonarRange);
+    }
+
+    if (typeof(flightVars.leftSonarRange) === "number") {
+        flightVars.leftSonarColor = sdgen.convertSonarRangeToCSSColor(flightVars.leftSonarRange);
+    }
+
+    if (typeof(flightVars.rightSonarRange) === "number") {
+        flightVars.rightSonarColor = sdgen.convertSonarRangeToCSSColor(flightVars.rightSonarRange);
+    }
 }
 
 function onReceiveVideo1(data) {

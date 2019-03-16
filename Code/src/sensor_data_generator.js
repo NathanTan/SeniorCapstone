@@ -220,5 +220,9 @@ module.exports = {
     getFrontSonarColor: function(time) {
         let x = interpolateValues(FRONT_SONAR_VALUES, time, true);
         return convertSonarRangeToCSSColor(x);
+    },
+
+    convertSonarRangeToCSSColor: function(range) {
+        return convertSonarRangeToCSSColor(range);
     }
 };

@@ -16,15 +16,20 @@ let colWarFrontSonar = undefined;
 function updateHTMLContent(data) {
   if (!bReady) return;
 
-  if (data.height !== undefined) {
-    document.getElementById("height").innerHTML = data.height.toString();
-  }
-
-  if (data.speed !== undefined) {
-    document.getElementById("speed").innerHTML = "--"; //data.speed.toString();
+  if (typeof(data.bottomSonarRange) === "number") {
+    let h = (data.bottomSonarRange * 0.0254).toFixed(2);
+    document.getElementById("bottomSonarRange").innerHTML = h.toString() + " m";
   }
   else {
-    document.getElementById("speed").innerHTML = "NONE";
+    document.getElementById("bottomSonarRange").innerHTML = "UNKNOWN";
+  }
+
+  if (typeof(data.speed) === "number") {
+    let s = parseFloat(data.speed).toFixed(2);
+    document.getElementById("speed").innerHTML = s.toString() + " m/s";
+  }
+  else {
+    document.getElementById("speed").innerHTML = "UNKNOWN";
   }
 
   colWarFrontSonar.style.fill = data.frontSonarColor;

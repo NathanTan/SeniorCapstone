@@ -9,6 +9,20 @@ SONAR_MIN = 6.0
 SONAR_MAX = 254.0
 
 # Start as take of, hover, change height, land
+# { time (sec) => speed (m/s)) }
+SPEED_VALUES = {
+    0.0 : 0.0,
+    2.0 : 0.02,
+    4.0 : 0.1,
+    5.0 : 1.2,
+    10.0 : 2.0,
+    20.0 : 1.0,
+    22.0 : 0.5,
+    30.0 : 0.2,
+    35.0 : 0.0
+}
+
+# Start as take of, hover, change height, land
 # { time (sec) => height (in) }
 HEIGHT_VALUES = {
     0.0 : SONAR_MIN,
@@ -165,6 +179,10 @@ def interpolateColors(colors, ratio):
 # Returns a float, representing height in inches.
 def getHeight(time):
     return interpolateValues(HEIGHT_VALUES, time, True)
+
+# Returns a float, representing speed in m/s.
+def getSpeed(time):
+    return interpolateValues(SPEED_VALUES, time, True)
 
 # Returns a float, representing side tilt angle in degrees
 def getAttitide(time):
