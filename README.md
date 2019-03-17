@@ -52,7 +52,7 @@ The following section describes the steps you have to perform on your Raspberry 
 
 2. Add execute permissions to all of the added files:
    ```bash
-   chmod -R 755 /home/pi/raspberry
+   sudo chmod -R 755 /home/pi/raspberry
    ```
 
 3. Clone/download mjpg-streamer to <tt>/home/pi/raspberry</tt> folder:
