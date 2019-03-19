@@ -29,19 +29,19 @@ def getData():
     data = {}
     #data["speed"] = random.randint(0, 1000)
     data["speed"] = sdg.getSpeed(dt)
-    data["bottomSonarRange"] = sdg.getHeight(dt)
+    #data["bottomSonarRange"] = sdg.getHeight(dt)
     data["leftSonarRange"] = sdg.getLeftSonarRange(dt)
     data["rightSonarRange"] = sdg.getRightSonarRange(dt)
     data["frontSonarRange"] = sdg.getFrontSonarRange(dt)
     data["sideTilt"] = sdg.getAttitide(dt)
     data["forwardTilt"] = sdg.getForwardTilt(dt)
 
-    #try:
-        #data["height"] = maxSonarTTY.measure(ULTRASONIC_DEVICE1)
-    #except Exception as err:
-        #print("Error: {0}".format(err))
-        #data["height"] = -1
-        #pass
+    try:
+        data["height"] = maxSonarTTY.measure(ULTRASONIC_DEVICE1)
+    except Exception as err:
+        print("Error: {0}".format(err))
+        data["height"] = -1
+        pass
 
     # From the gyro and accelerometer, we need sideTiltAngle, forwardTileAngle, velocity vector [x, y, z]
     # For the range sensors we need leftSonarRange, rightSonarRange, frontSonarRange, and bottomSonarRange
