@@ -186,7 +186,8 @@ function updateHTMLContent(data) {
 
   if (typeof(data.bottomSonarRange) === "number") {
     //let h = (data.bottomSonarRange * 0.0254).toFixed(2);
-    document.getElementById("bottomSonarRange").innerHTML = data.bottomSonarRange.toString() + " in";
+    let h = (data.bottomSonarRange * 1.0).toFixed(2);
+    document.getElementById("bottomSonarRange").innerHTML = h.toString() + " in";
   }
   else {
     document.getElementById("bottomSonarRange").innerHTML = "UNKNOWN";
