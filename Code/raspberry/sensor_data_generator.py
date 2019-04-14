@@ -40,32 +40,30 @@ HEIGHT_VALUES = {
 # { time (sec) => tilt (deg) }
 ATTITUDE_VALUES = {
     0.0 : 0,
-    1.0 : 10,
-    2.0 : -10,
-    3.0 : -70,
-    4.0 : -30,
-    5.0 : 0,
-    7.0 : -70,
-    10.0 : 0,
-    11.0 : -5,
-    12.0 : 3,
-    12.4 : 0
+    10.0 : -10,
+    20.0 : 30,
+    50.0 : 0
 }
 
 # Forward tilt: from -45 (clockwise) to 45 (counter-clockwise) degrees
 # { time (sec) => tilt (deg) }
 FORWARD_TILT_VALUES = {
     0.0 : 0,
-    1.0 : -5,
-    2.0 : 5,
-    3.0 : -15,
-    4.0 : -5,
-    5.0 : 0,
-    7.0 : 30,
-    10.0 : -10,
-    11.0 : 45,
-    13.0 : -25,
-    14.0 : 0
+    30.0 : -30,
+    60.0 : 30,
+    90.0 : 0
+}
+
+# Heading: from -180 (clockwise) to 180 (counter-clockwise) degrees
+# { time (sec) => heading (deg) }
+HEADING_VALUES = {
+    0.0 : 0,
+    30.0 : -180,
+    60.0 : 180,
+    90.0 : 0,
+    120.0: 360,
+    160.0: 350,
+    200.0: 360
 }
 
 # Left sonar values
@@ -191,6 +189,10 @@ def getAttitide(time):
 # Returns a float, representing forward tilt angle in degrees.
 def getForwardTilt(time):
     return interpolateValues(FORWARD_TILT_VALUES, time, True)
+
+# Returns a float, representing heading angle in degrees.
+def getHeading(time):
+    return interpolateValues(HEADING_VALUES, time, True)
 
 # Returns a float, representing distance of left sonar.
 def getLeftSonarRange(time):

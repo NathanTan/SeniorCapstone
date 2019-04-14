@@ -35,6 +35,7 @@ def getData():
     data["frontSonarRange"] = sdg.getFrontSonarRange(dt)
     data["sideTilt"] = sdg.getAttitide(dt)
     data["forwardTilt"] = sdg.getForwardTilt(dt)
+    data["heading"] = sdg.getHeading(dt)
 
     #try:
     #    data["height"] = maxSonarTTY.measure(ULTRASONIC_DEVICE1)

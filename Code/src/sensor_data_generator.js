@@ -59,6 +59,22 @@ const FORWARD_TILT_VALUES = {
     14.0 : 0
 };
 
+// Heading: from -180 (clockwise) to 180 (counter-clockwise) degrees
+// { time (sec) => heading (deg) }
+const HEADING_VALUES = {
+    0.0 : 0,
+    1.0 : -5,
+    2.0 : 5,
+    3.0 : -15,
+    4.0 : -5,
+    5.0 : 0,
+    7.0 : 30,
+    10.0 : -10,
+    11.0 : 45,
+    13.0 : -25,
+    14.0 : 0
+};
+
 // Left sonar values
 // { time (sec) => range (in) }
 const LEFT_SONAR_VALUES = {
@@ -202,6 +218,11 @@ module.exports = {
     // Returns a float, representing forward tilt angle in degrees.
     getForwardTilt: function(time) {
         return interpolateValues(FORWARD_TILT_VALUES, time, true);
+    },
+
+    // Returns a float, representing heading angle in degrees.
+    getHeading: function(time) {
+        return interpolateValues(HEADING_VALUES, time, true);
     },
 
     // Returns a string, representing an interpolated color in CSS form

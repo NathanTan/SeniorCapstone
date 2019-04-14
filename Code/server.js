@@ -45,7 +45,7 @@ app.get('/', function(req, res) {
 
 // Allows for informing the client of flight variables
 app.get('/flightVars', function(req, res) {
-    res.send(JSON.stringify(flightVars));
+    res.send(JSON.stringify(flightVars))
 })
 
 // Allows for informing the client of Raspberry PI ip
