@@ -114,7 +114,14 @@ function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveV
         sc1.bind(MULTICAST_SEND_PORT);
     }
     else {
-        let broadcast_addr = getBroadcastAddress();
+        let broadcast_addr = null;
+        try {
+            broadcast_addr = getBroadcastAddress();
+        }
+        catch(err) {
+            console.log(err);
+            broadcast_addr = "192.168.0.255";
+        }
         if (broadcast_addr == null) {
             broadcast_addr = DEFAULT_BROADCAST_ADDRESS;
             console.log("Could not find subnet broadcast address; broadcasting to " + DEFAULT_BROADCAST_ADDRESS + " instead.");

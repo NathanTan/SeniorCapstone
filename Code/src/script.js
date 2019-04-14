@@ -181,29 +181,41 @@ let colWarLeftSonar = undefined;
 let colWarRightSonar = undefined;
 let colWarFrontSonar = undefined;
 
+let switchBottomView = undefined;
+let switchDepthMap = undefined;
+
+let attitudeIndicator = undefined;
+let headingIndicator = undefined;
+
 function updateHTMLContent(data) {
   if (!bReady) return;
 
+  // Range sensors
   if (typeof(data.bottomSonarRange) === "number") {
-    //let h = (data.bottomSonarRange * 0.0254).toFixed(2);
-    let h = (data.bottomSonarRange * 1.0).toFixed(2);
-    document.getElementById("bottomSonarRange").innerHTML = h.toString() + " in";
+    let h = (data.bottomSonarRange * 0.0254).toFixed(2);
+    //let h = (data.bottomSonarRange * 1.0).toFixed(2);
+    document.getElementById("bottomSonarRange").innerHTML = "Height: " + h.toString() + " m";
   }
   else {
-    document.getElementById("bottomSonarRange").innerHTML = "UNKNOWN";
+    document.getElementById("bottomSonarRange").innerHTML = "Height: ...";
   }
 
   if (typeof(data.speed) === "number") {
     let s = parseFloat(data.speed).toFixed(2);
-    document.getElementById("speed").innerHTML = s.toString() + " m/s";
+    document.getElementById("speed").innerHTML = "Speed: " + s.toString() + " m/s";
   }
   else {
-    document.getElementById("speed").innerHTML = "UNKNOWN";
+    document.getElementById("speed").innerHTML = "Speed: ...";
   }
 
   colWarFrontSonar.style.fill = data.frontSonarColor;
   colWarLeftSonar.style.fill = data.leftSonarColor;
   colWarRightSonar.style.fill = data.rightSonarColor;
+
+  // Indicators
+  attitudeIndicator.setRoll(data.sideTilt);
+  attitudeIndicator.setPitch(data.forwardTilt);
+  headingIndicator.setHeading(data.heading);
 }
 
 function updateVideoSource(ip) {
@@ -241,31 +253,67 @@ let interval_id2 = setInterval(function () {
     .catch(err => console.error(err));
 }, 500)
 
-//For switching between the depth map and bottom camera feed
-var switchBottomView = document.getElementsByClassName("BottomFeed");
-var switchDepthMap = document.getElementsByClassName("DepthMap");
-
 document.addEventListener("keyup", function (event) {
   // Cancel the default action, if needed
   event.preventDefault();
   if (event.keyCode === 32) {
     console.log("PICKUP MODE");
-    switchBottomView[0].style.display = "none";
-    switchDepthMap[0].style.display = "block";
+    switchBottomView.style.display = "none";
+    switchDepthMap.style.display = "block";
   }
   if (event.keyCode === 13) {
     console.log("DEPTH-MAP MODE");
-    switchBottomView[0].style.display = "block";
-    switchDepthMap[0].style.display = "none";
+    switchBottomView.style.display = "block";
+    switchDepthMap.style.display = "none";
   }
 });
 
 function doOnReady() {
-  switchBottomView[0].style.display = "none";
-  switchDepthMap[0].style.display = "block";
+  // For switching between the depth map and bottom camera feed
+  switchBottomView = document.getElementById("bottomFeedContainer");
+  switchDepthMap = document.getElementById("depthFeedContainer");
+
+  switchBottomView.style.display = "block";
+  switchDepthMap.style.display = "none";
 
   colWarLeftSonar = document.querySelector("#colWarLeftSonar").getSVGDocument().getElementById("path78");
   colWarRightSonar = document.querySelector("#colWarRightSonar").getSVGDocument().getElementById("path78");
   colWarFrontSonar = document.querySelector("#colWarFrontSonar").getSVGDocument().getElementById("path78");
   bReady = true;
+
+  attitudeIndicator = $.flightIndicator("#attitude", "attitude", {roll:50, pitch:-20, size:200, showBox : true});
+  headingIndicator = $.flightIndicator("#heading", "heading", {heading:150, showBox:true});
+
+  // Dynamic examples
+  /*let attitude = $.flightIndicator("#attitude", "attitude", {roll:50, pitch:-20, size:200, showBox : true});
+  let heading = $.flightIndicator("#heading", "heading", {heading:150, showBox:true});
+  let variometer = $.flightIndicator("#variometer", "variometer", {vario:-5, showBox:true});
+  let airspeed = $.flightIndicator("#airspeed", "airspeed", {showBox: false});
+  let altimeter = $.flightIndicator("#altimeter", "altimeter");
+  let turn_coordinator = $.flightIndicator("#turn_coordinator", "turn_coordinator", {turn:0});
+
+  // Update at 20Hz
+  let increment = 0;
+  setInterval(function() {
+      // Airspeed update
+      airspeed.setAirSpeed(80+80*Math.sin(increment/10));
+
+      // Attitude update
+      attitude.setRoll(30*Math.sin(increment/10));
+      attitude.setPitch(50*Math.sin(increment/20));
+
+      // Altimeter update
+      altimeter.setAltitude(10*increment);
+      altimeter.setPressure(1000+3*Math.sin(increment/50));
+      increment++;
+
+      // TC update - note that the TC appears opposite the angle of the attitude indicator, as it mirrors the actual wing up/down position
+      turn_coordinator.setTurn((30*Math.sin(increment/10))*-1);
+
+      // Heading update
+      heading.setHeading(increment);
+
+      // Vario update
+      variometer.setVario(2*Math.sin(increment/10));
+  }, 50);*/
 }

@@ -1,101 +1,159 @@
-.DataContainer {
-  display: flex;
-  justify-content: space-between;
-
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
 
-.LeftContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -ms-high-contrast-adjust: none;
+    background-color: #fff;
 }
 
-.CenterContainer {
-  display: flex;
-  flex-direction: column;
-
+.clearSpacing {
+    margin: 0;
+    padding: 0;
 }
 
-.RightContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
+#frontFeedImage {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    cursor: select;
+    width: 100%;
+    height: 100%;
+    /*max-width: 100%;
+    max-height: 100%;*/
 }
 
-.FlightVariables {
-  display: flex;
-  width: 150px;
-  height: 150px;
-  border: 1px solid black;
+#bottomFeedImage {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    cursor: select;
+    max-width: 100%;
+    max-height: 100%;
+    opacity: 0.9;
 }
 
-.BottomFeed {
-  display: flex;
-  width: 400px;
-  height: 400px;
-  border: 0;
-  opacity: 1.0;
+#frontFeedContainer {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
 }
 
-.DepthMap {
-  display: flex;
-  text-align: center;
-  width: 200px;
-  height: 350px;
-  border: none;
+#bottomFeedContainer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+    padding: 10px;
+    margin: 0;
+    border: 0;
+    height: 50%;
+    z-index: 1;
 }
 
-.AttitudeFeed {
-  display: flex;
-  text-align: center;
-  width: 200px;
-  height: 200px;
-  border: 1px solid black;
+#depthFeedContainer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+    padding: 10px;
+    margin: 0;
+    border: 0;
+    height: 50%;
+    z-index: 1;
 }
 
-.SensorFeed {
-  display: flex;
-  width: 200px;
-  height: 200px;
-  border: 0;
+#flightVarsContainer {
+    position: absolute;
+    margin: 0;
+    padding: 10px;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }
 
-.FrontFeed {
-  /*margin-top: -220px;  this is half the height of your div
-  margin-top: -50px;
-  margin-left: -100px;
-  */
-  width: 600px;
-  height: 500px;
-  border: 1px solid black;
+.flightVars {
+    color: #fff;
+    font-size: 18px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-
-.container {
-  display: relative;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
+#instrumentContainer {
+    position: absolute;
+    margin: 0;
+    padding: 10px;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0.9;
 }
 
-.heading {
-  text-align: center;
-
+#colWarContainer {
+    position: absolute;
+    margin: 0;
+    padding: 20px;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
 }
 
-#bottomFeed {
-  -webkit-user-select: none;
-  cursor: select;
-  width: 100%;
-  height: 100%;
+#colWarContent {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    height: 150px;
+    width: 200px;
 }
 
-#frontFeed {
-  -webkit-user-select: none;
-  cursor: select;
-  width: 100%;
-  height: 100%;
+#colWarMAV {
+    position: absolute;
+    width: 40%;
+    top: 30%;
+    left: 30%;
 }
+
+#colWarLeftSonar {
+    position: absolute;
+    width: 25%;
+    top: 25%;
+    left: 0;
+}
+
+#colWarRightSonar {
+    position: absolute;
+    width: 25%;
+    top: 25%;
+    right: 0;
+    transform: rotate(180deg);
+}
+
+#colWarFrontSonar {
+    position: absolute;
+    width: 25%;
+    bottom: 63.0%;
+    left: 37.25%;
+    transform: rotate(90deg);
+}
+
