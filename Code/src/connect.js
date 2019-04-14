@@ -42,7 +42,7 @@ const MULTICAST_SEND_PORT = 57901;
 const RESPONSE_RECEIVE_PORT = 57902;
 // https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
 const MULTICAST_ADDRESS = "239.0.0.7";
-const DEFAULT_BROADCAST_ADDRESS = "255.255.255.255";
+const DEFAULT_BROADCAST_ADDRESS = "192.168.1.255";
 const MULTICAST_SEND_MESSAGE = Buffer.from("Beaver-Hawks1");
 const RECEIVE_MESSAGE = Buffer.from("Beaver-Hawks2");
 const MULTICAST_INTERVAL = 500; // in ms
@@ -120,7 +120,8 @@ function establishConnection(onFoundRaspberryPi, onReceiveSensorData, onReceiveV
         }
         catch(err) {
             console.log(err);
-            broadcast_addr = "192.168.0.255";
+            broadcast_addr = DEFAULT_BROADCAST_ADDRESS;
+            console.log("An error occurred while getting broadcast address; broadcasting to " + DEFAULT_BROADCAST_ADDRESS + " instead.");
         }
         if (broadcast_addr == null) {
             broadcast_addr = DEFAULT_BROADCAST_ADDRESS;
