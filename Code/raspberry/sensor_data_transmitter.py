@@ -37,11 +37,12 @@ def getData():
     data["forwardTilt"] = sdg.getForwardTilt(dt)
     data["heading"] = sdg.getHeading(dt)
 
+	# Uncomment below to use one of the ultrasonic sensors.
     #try:
-    #    data["height"] = maxSonarTTY.measure(ULTRASONIC_DEVICE1)
+    #    data["bottomSonarRange"] = maxSonarTTY.measure(ULTRASONIC_DEVICE1)
     #except Exception as err:
     #    print("Error: {0}".format(err))
-    #    data["height"] = -1
+    #    data["bottomSonarRange"] = -1
     #    pass
 
     # From the gyro and accelerometer, we need sideTiltAngle, forwardTileAngle, velocity vector [x, y, z]
