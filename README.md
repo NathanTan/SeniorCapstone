@@ -147,7 +147,7 @@ sudo /home/pi/raspberry/stop_mav.sh
    npm i
    ```
    
-2. For non-Windows users only! If your server is on linux or Mac OS X, the <tt>ip</tt> package installed with nodejs, raises errors on non-Windows platforms. We use that package for extracting the broadcast address from an IP and subnet address of the device. Provided that you know the broadcast address of your router (default gate-way), modify <tt>DEFAULT_BROADCAST_ADDRESS</tt>, at line 45, in <tt>Code/src/connect.js</tt> to the broadcast address of your router.
+2. For non-Windows users only! If your server is on linux or Mac OS X, <tt>ip</tt> package installed with NodeJS may raise errors. We use <tt>ip</tt> package for extracting broadcast address from an IP and subnet address of the device. Provided that you know the broadcast address of your wireless router (also know as default gate-way), modify <tt>DEFAULT_BROADCAST_ADDRESS</tt>, at line 45, in <tt>Code/src/connect.js</tt> to the broadcast address of your router. <tt>DEFAULT_BROADCAST_ADDRESS</tt> is used in case errors occur with the <tt>ip</tt> package.
 
 
 # Starting Server
