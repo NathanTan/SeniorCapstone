@@ -9,7 +9,9 @@ Shanmukh Challa<br/>
 Nathan Tan<br/>
 
 # Introduction
-This projects hosts the graphical user interface (GUI) for the micro air vehicle. The GUI code consists of two portions: the Raspberry Pi code and the Laptop/PC code. The required hardware includes:
+This project hosts the graphical user interface (GUI) for the micro air vehicle.
+[Graphical User Interface](Images/GUI.png)
+The GUI code consists of two portions: the Raspberry Pi code and the Laptop/PC code. The required hardware includes:
 * Raspberry Pi 3B+. You can also use Raspberry Pi Zero with caveats (eYs3D camera requirement below).
 * [Wireless router](https://www.amazon.com/Wireless-N300-Technology-streaming-performing-RT-N12/dp/B00DWFPDNO/ref=sr_1_14?keywords=wireless+router&qid=1555276152&s=gateway&sr=8-14)
 * Forward facing camera, with USB connection. For our setup we use [eYs3D Stereo Camera](https://www.sparkfun.com/products/14726), which is only compatible with Raspberry Pi 3B+. From that camera, the depth map feed is unreliable. If you are considering replicating this, please get a different camera that is compatible with both Raspberry Pi zero and Raspberry Pi 3. If you are not intending to implement depth map, the camera does not necessarily have to be a stereo camera. Based on the camera used, you may have to edit the device path passed to <tt>mjpg-streamer</tt>. See <tt>Code/raspberry/start_mav.sh</tt>.
@@ -147,7 +149,7 @@ sudo /home/pi/raspberry/stop_mav.sh
    npm i
    ```
 
-2. For non-Windows users only! If your server is on Linux or Mac OS X, <tt>ip</tt> package installed with NodeJS may raise errors. We use <tt>ip</tt> package for extracting broadcast address from an IP and subnet address of the device. Provided that you know the broadcast address of your wireless router (also know as default gate-way), modify <tt>DEFAULT_BROADCAST_ADDRESS</tt>, at line 45, in <tt>Code/src/connect.js</tt> to the broadcast address of your router. <tt>DEFAULT_BROADCAST_ADDRESS</tt> is used in case errors occur with the <tt>ip</tt> package.
+2. For non-Windows users only! If your server is on Linux or Mac OS X, <tt>ip</tt> package installed with NodeJS may raise errors. We use <tt>ip</tt> package for extracting broadcast address from an IP and subnet address of the device. Provided that you know the broadcast address of your wireless router (also known as default gate-way), modify <tt>DEFAULT_BROADCAST_ADDRESS</tt>, at line 45, in <tt>Code/src/connect.js</tt> to the broadcast address of your router. <tt>DEFAULT_BROADCAST_ADDRESS</tt> is used in case errors occur with the <tt>ip</tt> package.
 
 
 # Starting Server
