@@ -18,7 +18,7 @@ This projects hosts the graphical user interface (GUI) for the micro air vehicle
 
 To go further, you can also obtain an accelerometer and ultrasonic range sensors. We currently generate artificial range values for three of the ultrasonic sensors and accelerometer yaw, pitch, roll angles. The fourth ultrasonic sensor, that determines the height, is implemented in our code. To use it, uncomment lines 41-46 in <tt>Code/raspberry/sensor_data_transmitter.py</tt>. Note, that our portion does not describe how to connect ultrasonics and accelerometer to the Raspberry Pi. This is a repsonsibility of the electrical engineering sub-team. We implement [V-MaxSonar-EZ4 (MB1040)](https://www.adafruit.com/product/982) ultrasonic sensor for decting the height.
 
-Below are instructions for setting up the Raspberry Pi and the Laptop/PC.
+Below are instructions for setting up the Raspberry Pi and the Laptop/PC. After you go through the steps of setting up code on the Raspberry Pi and your laptop (the server), you can launch or start both within 60 seconds of each other. If it takes more than 60 seconds, you have to abort the server and stop the mav script and attempt the launch again.
 
 
 # Setting Up Raspberry Pi
@@ -55,7 +55,7 @@ There are two parts for setting up the Raspberry Pi. The first part focuses on s
    Note that you will first have to wait like 30 seconds after bootup before searching for IP or ssh-ing into Raspberry Pi.
 
 
-## Setting Up Code
+## Setting Up Code on Raspberry Pi
 
 The following section describes the steps you have to perform on your Raspberry Pi Raspbian terminal:
 
