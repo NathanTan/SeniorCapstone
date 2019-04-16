@@ -122,7 +122,7 @@ The following section describes the steps you have to perform on your Raspberry 
    3. Add the following at the very end of the file, before the <tt>exit 0</tt> command:
       ```bash
       sleep 3s && /home/pi/raspberry/start_mav.sh & # 3s delay is crucial to let pi to connect to wifi first
-      ```
+      ```   
 
 
 # Starting Raspberry Pi
@@ -141,11 +141,13 @@ sudo /home/pi/raspberry/stop_mav.sh
 
 
 # Setting Up Server
-Provided that NodeJS is installed and the repository is cloned to your Laptop/PC, run the following:
-```bash
-cd /Code/
-npm i
-```
+1. Provided that NodeJS is installed and the repository is cloned to your Laptop/PC, run the following:
+   ```bash
+   cd /Code/
+   npm i
+   ```
+   
+2. For non-Windows users only! If your server is on linux or Mac OS X, the <tt>ip</tt> package installed with nodejs, raises errors on non-Windows platforms. We use that package for extracting the broadcast address from an IP and subnet address of the device. Provided that you know the broadcast address of your router (default gate-way), modify <tt>DEFAULT_BROADCAST_ADDRESS</tt>, at line 45, in <tt>Code/src/connect.js</tt> to the broadcast address of your router.
 
 
 # Starting Server
