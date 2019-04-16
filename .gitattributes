@@ -1,6 +1,9 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+*.gitattributes text eol=lf filter=spabs
+*.gitignore text eol=lf filter=spabs
+
 *.json text eol=lf filter=spabs
 *.conf text eol=lf filter=spabs
 *.txt text eol=lf filter=spabs

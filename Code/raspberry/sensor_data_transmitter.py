@@ -37,7 +37,7 @@ def getData():
     data["forwardTilt"] = sdg.getForwardTilt(dt)
     data["heading"] = sdg.getHeading(dt)
 
-	# Uncomment below to use one of the ultrasonic sensors.
+    # Uncomment below to use one of the ultrasonic sensors.
     #try:
     #    data["bottomSonarRange"] = maxSonarTTY.measure(ULTRASONIC_DEVICE1)
     #except Exception as err:

@@ -5,3 +5,5 @@
 
 /Code/raspberry/spawned-processes
 /Code/raspberry/server-ip-address
+
+*.pyc

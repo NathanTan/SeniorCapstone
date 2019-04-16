@@ -13,12 +13,12 @@ This projects hosts the graphical user interface (GUI) for the micro air vehicle
 * Raspberry Pi 3B+. You can also use Raspberry Pi Zero with caveats (eYs3D camera requirement below).
 * [Wireless router](https://www.amazon.com/Wireless-N300-Technology-streaming-performing-RT-N12/dp/B00DWFPDNO/ref=sr_1_14?keywords=wireless+router&qid=1555276152&s=gateway&sr=8-14)
 * Forward facing camera, with USB connection. For our setup we use [eYs3D Stereo Camera](https://www.sparkfun.com/products/14726), which is only compatible with Raspberry Pi 3B+. From that camera, the depth map feed is unreliable. If you are considering replicating this, please get a different camera that is compatible with both Raspberry Pi zero and Raspberry Pi 3. If you are not intending to implement depth map, the camera does not necessarily have to be a stereo camera. Based on the camera used, you may have to edit the device path passed to <tt>mjpg-streamer</tt>. See <tt>Code/raspberry/start_mav.sh</tt>.
-* Bottom facing camera, with ribbon connection. For our setup, we use [Raspberry Pi Camera](https://www.amazon.com/Raspberry-Camera-Module-OV5647-Sensor/dp/B078Y63QNG/ref=asc_df_B078Y63QNG/?tag=hyprod-20&linkCode=df0&hvadid=241967399507&hvpos=1o2&hvnetw=g&hvrand=18316428705060712916&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9032980&hvtargid=pla-447902284057&psc=1). We require ribbon camera because raspberry Pi zero only has one usb input and on ribbon input.
+* Bottom facing camera, with ribbon connection. For our setup, we use [Raspberry Pi Camera](https://www.amazon.com/Raspberry-Camera-Module-OV5647-Sensor/dp/B078Y63QNG/ref=asc_df_B078Y63QNG/?tag=hyprod-20&linkCode=df0&hvadid=241967399507&hvpos=1o2&hvnetw=g&hvrand=18316428705060712916&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9032980&hvtargid=pla-447902284057&psc=1). We require ribbon camera because raspberry Pi zero only has one USB input and on ribbon input.
 * Laptop or PC. The laptop displays all the camera and sensor information for the pilot.
 
-To go further, you can also obtain an accelerometer and ultrasonic range sensors. We currently generate artificial range values for three of the ultrasonic sensors and accelerometer yaw, pitch, roll angles. The fourth ultrasonic sensor, that determines the height, is implemented in our code. To use the fourth ultrasonic sensor, uncomment lines 41-46 in <tt>Code/raspberry/sensor_data_transmitter.py</tt>. Please note, our portion does not describe how to connect ultrasonics and accelerometer to the Raspberry Pi. This is a repsonsibility of the electrical engineering sub-team. We implement [V-MaxSonar-EZ4 (MB1040)](https://www.adafruit.com/product/982) ultrasonic sensor for detecting the height.
+To go further, you can also obtain an accelerometer and ultrasonic range sensors. We currently generate artificial range values for three of the ultrasonic sensors and accelerometer yaw, pitch, roll angles. The fourth ultrasonic sensor, that determines the height, is implemented in our code. To use the fourth ultrasonic sensor, uncomment lines 41-46 in <tt>Code/raspberry/sensor_data_transmitter.py</tt>. Please note, our portion does not describe how to connect ultrasonics and accelerometer to the Raspberry Pi. This is a responsibility of the electrical engineering sub-team. We implement [V-MaxSonar-EZ4 (MB1040)](https://www.adafruit.com/product/982) ultrasonic sensor for detecting the height.
 
-Below are instructions for setting up the Raspberry Pi and the Laptop/PC. After you go through the steps of setting up code on the Raspberry Pi and your laptop (the server), you can launch or start both within 60 seconds of each other. If it takes more than 60 seconds, you have to abort the server, stop the mav script, and attempt the launch again. The commands for starting and stoping both, the server and Raspberry Pi, are described in the sections below.
+Below are instructions for setting up the Raspberry Pi and the Laptop/PC. After you go through the steps of setting up code on the Raspberry Pi and your laptop (the server), you can launch or start both within 60 seconds of each other. If it takes more than 60 seconds, you have to abort the server, stop the MAV script, and attempt the launch again. The commands for starting and stopping both, the server and Raspberry Pi, are described in the sections below.
 
 
 # Setting Up Raspberry Pi
@@ -42,7 +42,7 @@ There are two parts for setting up the Raspberry Pi. The first part focuses on s
 
    If you want to connect to our BeaversMAV network, inject the SD card, and paste <tt>wpa_supplicant.conf</tt> file (attached with this repository) to the boot folder. Then, eject and load the Raspberry Pi.
 
-4. To access Raspberry Pi, you can ssh into it with IP address. To determine the IP address of your Raspberry Pi (provided it is connected to the network and booted up), you can determine the IP address by loging into your router and finding the client devices. To login to your router, first connect your laptop to the network and then navigate to router's IP from your browser, such as <tt>192.168.1.1</tt>. Alternatively, you can use nmap to scan all the devices on your network:
+4. To access Raspberry Pi, you can ssh into it with IP address. To determine the IP address of your Raspberry Pi (provided it is connected to the network and booted up), you can determine the IP address by logging into your router and finding the client devices. To login to your router, first connect your laptop to the network and then navigate to router's IP from your browser, such as <tt>192.168.1.1</tt>. Alternatively, you can use nmap to scan all the devices on your network:
    ```bash
    nmap -sn 192.168.0.1/16 # 192.168.0.1 is LAN Wi-Fi default gateway (obtained by ifconfig or ipconfig)
    ```
@@ -122,7 +122,7 @@ The following section describes the steps you have to perform on your Raspberry 
    3. Add the following at the very end of the file, before the <tt>exit 0</tt> command:
       ```bash
       sleep 3s && /home/pi/raspberry/start_mav.sh & # 3s delay is crucial to let pi to connect to wifi first
-      ```   
+      ```
 
 
 # Starting Raspberry Pi
@@ -146,8 +146,8 @@ sudo /home/pi/raspberry/stop_mav.sh
    cd /Code/
    npm i
    ```
-   
-2. For non-Windows users only! If your server is on linux or Mac OS X, <tt>ip</tt> package installed with NodeJS may raise errors. We use <tt>ip</tt> package for extracting broadcast address from an IP and subnet address of the device. Provided that you know the broadcast address of your wireless router (also know as default gate-way), modify <tt>DEFAULT_BROADCAST_ADDRESS</tt>, at line 45, in <tt>Code/src/connect.js</tt> to the broadcast address of your router. <tt>DEFAULT_BROADCAST_ADDRESS</tt> is used in case errors occur with the <tt>ip</tt> package.
+
+2. For non-Windows users only! If your server is on Linux or Mac OS X, <tt>ip</tt> package installed with NodeJS may raise errors. We use <tt>ip</tt> package for extracting broadcast address from an IP and subnet address of the device. Provided that you know the broadcast address of your wireless router (also know as default gate-way), modify <tt>DEFAULT_BROADCAST_ADDRESS</tt>, at line 45, in <tt>Code/src/connect.js</tt> to the broadcast address of your router. <tt>DEFAULT_BROADCAST_ADDRESS</tt> is used in case errors occur with the <tt>ip</tt> package.
 
 
 # Starting Server
