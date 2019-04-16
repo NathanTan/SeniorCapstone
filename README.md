@@ -52,7 +52,7 @@ There are two parts for setting up the Raspberry Pi. The first part focuses on s
    ssh pi@192.168.0.120
    ```
 
-   Note that you will first have to wait like 30 seconds after bootup before searching for IP or ssh-ing into Raspberry Pi.
+   Note that you will first have to wait approximately 30 seconds after bootup prior to searching for IP or ssh-ing to Raspberry Pi.
 
 
 ## Setting Up Code on Raspberry Pi
