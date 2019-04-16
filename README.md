@@ -10,7 +10,7 @@ Nathan Tan<br/>
 
 # Introduction
 This project hosts the graphical user interface (GUI) for the micro air vehicle.
-[Graphical User Interface](Images/GUI.png)
+![Graphical User Interface](Images/GUI.png)
 The GUI code consists of two portions: the Raspberry Pi code and the Laptop/PC code. The required hardware includes:
 * Raspberry Pi 3B+. You can also use Raspberry Pi Zero with caveats (eYs3D camera requirement below).
 * [Wireless router](https://www.amazon.com/Wireless-N300-Technology-streaming-performing-RT-N12/dp/B00DWFPDNO/ref=sr_1_14?keywords=wireless+router&qid=1555276152&s=gateway&sr=8-14)
