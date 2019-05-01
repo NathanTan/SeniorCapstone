@@ -1,107 +1,75 @@
+#!/usr/bin/python
 import smbus
-import time
+import math
 
-PWR_M = 0x06
-INT_EN = 0x17
 
-GYRO_X = 0x33
-GYRO_Y = 0x35
-GYRO_Z = 0x37
-ACCEL_X = 0x2D
-ACCEL_Y = 0x2F
-ACCEL_Z = 0x31
+#Registers for power management
+power_mgmt_1 = 0x6b
+power_mgmt_2 = 0x6c
 
+#Read data from sensor
+def read_byte(reg):
+    return bus.read_byte_data(address, reg)
+
+def read_word(reg):
+    h = bus.read_byte_data(address, reg)
+    l = bus.read_byte_data(address, reg+1)
+    value = (h << 8) + l
+    return value
+
+def read_word_2c(reg):
+    val = read_word(reg)
+    if (val >= 0x8000):
+        return -((65535 - val) + 1)
+    else:
+        return val
+
+#Functions to obtain the turn from original axes
+def dist(a,b):
+    return math.sqrt((a*a)+(b*b))
+
+def get_y_rotation(x,y,z):
+    radians = math.atan2(x, dist(y,z))
+    return -math.degrees(radians)
+
+def get_x_rotation(x,y,z):
+    radians = math.atan2(y, dist(x,z))
+    return math.degrees(radians)
+
+def get_z_rotation(x,y,z):
+    radians = math.atan2(z, dist(x,y))
+    return math.degrees(radians)
+
+#Write byte to obtain
 bus = smbus.SMBus(1)
+address = 0x68
+bus.write_byte_data(address, power_mgmt_1, 0)
 
-Device_Address = 0x68 #device address
-GxCal = 0
-GyCal = 0
-GzCal = 0
-AxCal = 0
-AyCal = 0
-AzCal = 0
+#Output data to the screen
+g_x = read_word_2c(0x43)
+g_y = read_word_2c(0x45)
+g_z = read_word_2c(0x47)
 
-def InitICM():
-	bus.write_byte_data(Device_Address, PWR_M, 1)
-	bus.write_byte_data(Device_Address, INT_EN, 1)
-	time.sleep(1)
+print
+print "Accelerometer"
+print "---------------------"
 
-def readICM(addr):
-	high = bus.read_byte_data(Device_Address, addr)
-	low = bus.read_byte_data(Device_Address, addr+1)
-	value = ((high << 8) | low)
-	if(value > 32768):
-		value = value - 65536
-	return value
+a_x = read_word_2c(0x3b)
+a_y = read_word_2c(0x3d)
+a_z = read_word_2c(0x3f)
 
-def gyro():
-	x = readICM(GYRO_X)
-	y = readICM(GYRO_Y)
-	z = readICM(GYRO_Z)
-	Gx = x/131.0 - GxCal
-	Gy = y/131.0 - GyCal
-	Gz = z/131.0 - GzCal
-	print ("Gx "),; print (Gx)
-	print ("Gy "),; print (Gy)
-	print ("Gz "),; print (Gz)
-	time.sleep(0.01)
+a_xs = a_x / 16384.0
+a_ys = a_y / 16384.0
+a_zs = a_z / 16384.0
 
-def accel():
-	x = readICM(ACCEL_X)
-	y = readICM(ACCEL_Y)
-	z = readICM(ACCEL_Z)
-	Ax = x/16384.0 - AxCal
-	Ay = y/16384.0 - AyCal
-	Az = z/16384.0 - AzCal
-	print ("Ax "),; print (Ax)
-	print ("Ay "),; print (Ay)
-	print ("Az "),; print (Az)
-	time.sleep(0.01)
+print "Accel (X axis): ", a_xs
+print "Accel (Y axis): ", a_ys
+print "Accel (Z axis): ", a_zs
 
-def calibrate():
-	global AxCal
-	global AyCal
-	global AzCal
-	x = 0
-	y = 0
-	z = 0
-	for i in range(50):
-		x = x + readICM(ACCEL_X)
-		y = y + readICM(ACCEL_Y)
-      		z = z + readICM(ACCEL_Z)
-  	x = x/50
-  	y = y/50
-  	z = z/50
-  	AxCal = x/16384.0
-  	AyCal = y/16384.0
-  	AzCal = z/16384.0
+print
+print "Rotation"
+print "----------------------"
 
-	global GxCal
-	global GyCal
-	global GzCal
-	x = 0
-	y = 0
-	z = 0
-	for i in range(50):
-		x = x + readICM(GYRO_X)
-		y = y + readICM(GYRO_Y)
-		z = z + readICM(GYRO_Z)
-	x = x/50
-	y = y/50
-	z = z/50
-	GxCal = x/131.0
-	GyCal = y/131.0
-	GzCal = z/131.0
-
-
-print("ICM20948")
-InitICM()
-calibrate()
-for i in range(10):
-	InitICM()
-	time.sleep(1)
-	gyro()
-	accel()
-	print(" ")
-
-	
+print "X Rotation: " , get_x_rotation(a_xs, a_ys, a_zs)
+print "Y Rotation: " , get_y_rotation(a_xs, a_ys, a_zs)
+print "Z Rotation: " , get_z_rotation(a_xs, a_ys, a_zs)
