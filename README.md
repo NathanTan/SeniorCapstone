@@ -60,14 +60,11 @@ There are two parts for setting up the Raspberry Pi. The first part focuses on s
    Note that you will first have to wait approximately 30 seconds after bootup prior to searching for IP or SSH-ing to Raspberry Pi.
 
 10. SSH to your raspberry Pi. This can be done by opening a terminal and writing an alike command:
-   ```bash
-   ssh pi@192.168.0.120
-   ```
+    ```bash
+    ssh pi@192.168.0.120
+    ```
 
-   When prompted for password, enter: <tt>raspberry</tt>
-
-   To find the IP address of your Raspberry Pi do one of the following:
-   1. Navigate to your router and look for the attached devices. Each device will have an IP address specified.
+    When prompted for password, enter: <tt>raspberry</tt>
 
 
 ## Setting Up Code on Raspberry Pi
