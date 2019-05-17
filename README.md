@@ -51,11 +51,13 @@ There are two parts for setting up the Raspberry Pi. The first part focuses on s
 8. Ensure that your laptop is connected to the same network as Raspberry Pi.
 
 9. Determine the IP address of your Raspberry Pi (provided it is connected to the network and booted up). There are two ways of doing that:
+
    1. Navigate to your router's home page and look for attached devices. To navigate to a router's home page, open your browser and enter the IP address of your router to the address bar, such as <tt>192.168.1.1</tt>. Router IP and password information can be found on the label attached to the router. Once logged in to your router, navigate to attached devices and look for Raspberry Pi. An IP address is listed with the device.
+
    2. Alternatively, you can use nmap to scan all the devices on your network:
-   ```bash
-   nmap -sn 192.168.0.1/16 # 192.168.0.1 is LAN Wi-Fi default gateway (obtained by ifconfig or ipconfig)
-   ```
+      ```bash
+      nmap -sn 192.168.0.1/16 # 192.168.0.1 is LAN Wi-Fi default gateway (obtained by ifconfig or ipconfig)
+      ```
 
    Note that you will first have to wait approximately 30 seconds after bootup prior to searching for IP or SSH-ing to Raspberry Pi.
 
