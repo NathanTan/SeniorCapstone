@@ -31,38 +31,55 @@ There are two parts for setting up the Raspberry Pi. The first part focuses on s
 
 1. Setup Raspbian Stretch Lite on your Raspberry Pi: https://www.raspberrypi.org/documentation/installation/installing-images/
 
-2. Inject SD card and add the following at the end of <tt>/boot/config.txt</tt>:
+2. Inject the SD card (now with the kernel flashed) to your laptop.
+
+3. Add the following at the end of <tt>/boot/config.txt</tt>:
    ```bash
    enable_uart=1
    dtoverlay=pi3-disable-bt
    dtoverlay=pi3-miniuart-bt
    ```
 
-3. Connect Raspberry Pi to a Wifi network. Both the server and the Raspberry Pi will have to be connected to a common Wifi network for UDP communication to work. There are two ways to setup Wifi network on your Raspbian:
-   * Setup WIFI by editing SD card: https://howchoo.com/g/ndy1zte2yjn/how-to-set-up-wifi-on-your-raspberry-pi-without-ethernet
-   * Setup WIFI by hooking keyboard and display to the Raspberry Pi and then modifying within the Raspbian kernel: https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
+4. Enable ssh: Create an empty file called <tt>shh</tt> in <tt>/boot/</tt> folder.
 
-   If you want to connect to our BeaversMAV network, inject the SD card, and paste <tt>wpa_supplicant.conf</tt> file (attached with this repository) to the boot folder. Then, eject and load the Raspberry Pi.
+5. Setup Wifi: Copy <tt>wpa_supplicant.conf</tt> (attached with this repository) to <tt>/boot/</tt> folder; modify network name and password for a desired Wifi network.
 
-4. To access Raspberry Pi, you can ssh into it with IP address. To determine the IP address of your Raspberry Pi (provided it is connected to the network and booted up), you can determine the IP address by logging into your router and finding the client devices. To login to your router, first connect your laptop to the network and then navigate to router's IP from your browser, such as <tt>192.168.1.1</tt>. Alternatively, you can use nmap to scan all the devices on your network:
+6. Eject the SD card from your laptop and mount to your Raspberry Pi.
+
+7. Power your Raspberry Pi and wait approximately 30 seconds.
+
+8. Ensure that your laptop is connected to the same network as Raspberry Pi.
+
+9. Determine the IP address of your Raspberry Pi (provided it is connected to the network and booted up). There are two ways of doing that:
+   1. Navigate to your router's home page and look for attached devices. To navigate to a router's home page, open your browser and enter the IP address of your router to the address bar, such as <tt>192.168.1.1</tt>. Router IP and password information can be found on the label attached to the router. Once logged in to your router, navigate to attached devices and look for Raspberry Pi. An IP address is listed with the device.
+   2. Alternatively, you can use nmap to scan all the devices on your network:
    ```bash
    nmap -sn 192.168.0.1/16 # 192.168.0.1 is LAN Wi-Fi default gateway (obtained by ifconfig or ipconfig)
    ```
 
-   Provided that you have the IP address, you can then ssh with an alike command:
+   Note that you will first have to wait approximately 30 seconds after bootup prior to searching for IP or SSH-ing to Raspberry Pi.
+
+10. SSH to your raspberry Pi. This can be done by opening a terminal and writing an alike command:
    ```bash
    ssh pi@192.168.0.120
    ```
 
-   Note that you will first have to wait approximately 30 seconds after bootup prior to searching for IP or ssh-ing to Raspberry Pi.
+   When prompted for password, enter: <tt>raspberry</tt>
+
+   To find the IP address of your Raspberry Pi do one of the following:
+   1. Navigate to your router and look for the attached devices. Each device will have an IP address specified.
 
 
 ## Setting Up Code on Raspberry Pi
+
+For the next set of steps, Internet is required. Connect your Pi to Internet (your modem) or connect to a different network that already has Internet access (by switching laptop network and SSH-ing with a different IP).
 
 The following section describes the steps you have to perform on your Raspberry Pi Raspbian terminal:
 
 1. Upload <tt>/Code/raspberry</tt> folder to your Raspberry Pi's home directory, so that the path is resembled in the following way:
    <tt>/home/pi/raspberry/</tt>
+
+   File transfer can be achieved by <i>WinCP</i> or <i>FileZilla</i>.
 
 2. Add execute permissions to all of the added files:
    ```bash
@@ -89,7 +106,7 @@ The following section describes the steps you have to perform on your Raspberry 
    2. Then compile:
       ```bash
       cd /home/pi/raspberry/mjpg-streamer/mjpg-streamer-experimental
-      make
+      sudo make
       sudo make install
       ```
 5.  Install <tt>pyserial</tt> libraries for python:
@@ -125,6 +142,8 @@ The following section describes the steps you have to perform on your Raspberry 
       ```bash
       sleep 3s && /home/pi/raspberry/start_mav.sh & # 3s delay is crucial to let pi to connect to wifi first
       ```
+
+7. Enable camera: https://www.raspberrypi.org/documentation/configuration/camera.md
 
 
 # Starting Raspberry Pi

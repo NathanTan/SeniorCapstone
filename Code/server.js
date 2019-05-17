@@ -1,9 +1,9 @@
-const express = require("express")
-const fetch = require('node-fetch')
-let path = require('path')
+const express = require("express");
+const fetch = require('node-fetch');
+let path = require('path');
 
-const sdgen = require('./src/sensor_data_generator') // sensor data generator
-const connector = require('./src/connect')
+const sdgen = require('./src/sensor_data_generator'); // sensor data generator
+const connector = require('./src/connect');
 
 
 // -----------------------------------------------------------------------------
@@ -31,21 +31,21 @@ let flightVars = {speedMag:0, speedX:0, speedY:0, speedZ:0, accelX:0, accelY:0, 
 let startDate = new Date();
 let startTime = startDate.getTime();
 
-let raspberryIP = undefined
+let raspberryIP = undefined;
 
-const app = express()
+const app = express();
 
-app.use(express.static(__dirname + '/public'))
-app.use(express.static(__dirname + '/src'))
-app.use(express.static(__dirname + '/thirdparty'))
+app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/src'));
+app.use(express.static(__dirname + '/thirdparty'));
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/index.html'))
+    res.sendFile(path.join(__dirname + '/index.html'));
 })
 
 // Allows for informing the client of flight variables
 app.get('/flightVars', function(req, res) {
-    res.send(JSON.stringify(flightVars))
+    res.send(JSON.stringify(flightVars));
 })
 
 // Allows for informing the client of Raspberry PI ip
@@ -58,11 +58,10 @@ app.get('/raspberryIP', function(req, res) {
     }
 })
 
-const port = process.env.PORT || 3000
-
-app.listen(port, () => {
-    console.log(`Listening on port ${port}`)
-})
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}...`);
+});
 
 /*setInterval(function() {
     let date = new Date();
